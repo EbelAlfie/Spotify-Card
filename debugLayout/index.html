@@ -18,10 +18,94 @@
         }
 
         .equalizer {
-            stroke-width: 5;
-            stroke: #1DB954;
+            fill: #1DB954;
+            transform-box: fill-box;
+            transform: rotate(180deg) ;
             animation-iteration-count: infinite;
         }
+
+        .eq-slow {
+            animation-duration: 1.2s;
+        }
+
+        .eq-medium {
+            animation-duration: 1.0s;
+        }
+
+        .eq-quick {
+            animation-duration: 0.8s;
+        }
+
+        .eq-fast {
+            animation-duration: 0.5s;
+        }
+
+        .eq-short {
+            animation-name: eq1;
+        }
+
+        .eq-mediocre {
+            animation-name: eq2;
+        }
+
+        .eq-tall {
+            animation-name: eq3;
+        }
+
+        .eq-tallest {
+            animation-name: eq4;
+        }
+
+        @keyframes eq1 {
+            0% {
+              height: 2px;
+            }
+            50% {
+              height: 7px;
+            }
+            100% {
+              height: 2px;
+            }
+          }
+          
+          @keyframes eq2 {
+            0% {
+              height: 5px;
+            }
+            40% {
+              height: 1px;
+            }
+            80% {
+              height: 7px;
+            }
+            100% {
+              height: 5px;
+            }
+          }
+          
+          @keyframes eq3 {
+            0% {
+              height: 7px;
+            }
+            50% {
+              height: 0px;
+            }
+            100% {
+              height: 7px;
+            }
+          }
+          
+          @keyframes eq4 {
+            0% {
+              height: 2px;
+            }
+            50% {
+              height: 7px;
+            }
+            100% {
+              height: 2px;
+            }
+          }
     </style>
     <rect 
         height="100" 
@@ -41,10 +125,11 @@
         y="10"
         href="https://i.scdn.co/image/ab67616d0000b273232711f7d66a1e19e89e28c5" 
         alt="Track Cover"
+        clip-path="inset(0% round 15px)"
     />
-    <line 
-        class="equalizer"
-        x1="8" y1="90" x2="8" y2="70"
-    >
-    </line> 
+    <rect class="equalizer eq-medium eq-tallest" x="16" y="90" width="2" height="11"/>
+    <rect class="equalizer eq-fast eq-mediocre" x="20" y="90" width="2" height="11"/>
+    <rect class="equalizer eq-quick eq-short" x="24" y="90" width="2" height="11"/>
+    <rect class="equalizer eq-slow eq-tall" x="28" y="90" width="2" height="11"/>
+    
 </svg>
