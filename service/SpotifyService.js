@@ -1,0 +1,6 @@
+class SpotifyService {
+
+    getLastDeviceState(request) {
+
+    }
+}
