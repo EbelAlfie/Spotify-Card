@@ -1,4 +1,6 @@
-export const getSpotifyPlayerCard = () => {
+export const getSpotifyPlayerCard = (songTrack) => {
+    const {imageUrl, songTitle, artists} = songTrack
+    
     const cardScale = 2;
     const cardModifier = {
         width: 300 * cardScale,

@@ -8,7 +8,7 @@ export class SpotifyRepository {
         this.spotConnectionId = process.env.CONNECTION_ID || ""
     }
 
-    getLastDeviceState(request) {
+    async getLastDeviceState(request) {
         let data = JSON.stringify({
             "member_type": "CONNECT_STATE",
             "device": {
@@ -23,37 +23,37 @@ export class SpotifyRepository {
         });
         
         let config = {
-        method: 'put',
-        maxBodyLength: Infinity,
-        url: 'https://gew4-spclient.spotify.com/connect-state/v1/devices/',
-        headers: { 
-            'accept': 'application/json', 
-            'accept-language': 'en-US,en;q=0.9,id;q=0.8', 
-            'authorization': this.authorization, 
-            'client-token': this.clientToken, 
-            'content-type': 'application/json', 
-            'origin': 'https://open.spotify.com', 
-            'priority': 'u=1, i', 
-            'referer': 'https://open.spotify.com/', 
-            'sec-ch-ua': '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"', 
-            'sec-ch-ua-mobile': '?0', 
-            'sec-ch-ua-platform': '"Linux"', 
-            'sec-fetch-dest': 'empty', 
-            'sec-fetch-mode': 'cors', 
-            'sec-fetch-site': 'same-site', 
-            'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 
-            'x-spotify-connection-id': this.spotConnectionId
-        },
-        data : data
+            method: 'put',
+            maxBodyLength: Infinity,
+            url: 'https://gew4-spclient.spotify.com/connect-state/v1/devices/', //TODO ada yang dihapus
+            headers: { 
+                'accept': 'application/json', 
+                'accept-language': 'en-US,en;q=0.9,id;q=0.8', 
+                'authorization': this.authorization, 
+                'client-token': this.clientToken, 
+                'content-type': 'application/json', 
+                'origin': 'https://open.spotify.com', 
+                'priority': 'u=1, i', 
+                'referer': 'https://open.spotify.com/', 
+                'sec-ch-ua': '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"', 
+                'sec-ch-ua-mobile': '?0', 
+                'sec-ch-ua-platform': '"Linux"', 
+                'sec-fetch-dest': 'empty', 
+                'sec-fetch-mode': 'cors', 
+                'sec-fetch-site': 'same-site', 
+                'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 
+                'x-spotify-connection-id': this.spotConnectionId
+            },
+            data : data
         };
         
         return axios.request(config)
         .then((response) => {
-        console.log(JSON.stringify(response.data));
-        return response.data
+            console.log(JSON.stringify(response.data));
+            return response.data
         })
         .catch((error) => {
-        console.log(error);
+            console.log(error);
         });
     }
 
@@ -76,7 +76,7 @@ export class SpotifyRepository {
         return axios.request(config)
         .then((response) => {
             console.log(response.data)
-            return response.data
+            return response
         })
     }
 }

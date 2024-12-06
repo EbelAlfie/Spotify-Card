@@ -1,10 +1,29 @@
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
+import { SpotifyUseCase } from "../domain/SpotifyUseCase.js"
 import { SpotifyRepository } from "../service/SpotifyRepository.js"
 
-export const getSpotifyCard = (request, response) => {
+export const getSpotifyCard = async (request, response) => {
     const repository = new SpotifyRepository()
+    const useCase = new SpotifyUseCase(repository)
 
-    repository.getTrackById("0MJ5wsGpqu0gTJkx53ewxc")
+    const trackResult = await useCase.getTrackById("0MJ5wsGpqu0gTJkx53ewxc")
 
-    response.send(getSpotifyPlayerCard())
+    if (trackResult instanceof Error) {
+        console.log(trackResult)
+        response.status(500)
+        response.send(trackResult.message)
+        return
+    }
+
+    const spotifyCard = getSpotifyPlayerCard(
+        {
+            imageUrl: trackResult.images[0].url, 
+            songTitle: trackResult.name, 
+            artists: trackResult.artists.join(", "),
+            audioUrl: trackResult.previewUrl
+        }
+    )
+
+    response.status(200)
+    response.send(spotifyCard)
 }
