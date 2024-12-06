@@ -1,8 +1,8 @@
 export class SpotifyUseCase {
-    constructor(repository) {
-        if (repository === undefined || repository === null) 
+    constructor(trackRepository) {
+        if (trackRepository === undefined || trackRepository === null) 
             throw Error("No repository provided")
-        this.repository = repository
+        this.repository = trackRepository
     }
 
     async getLastDeviceState(params) {
@@ -24,12 +24,9 @@ export class SpotifyUseCase {
 
             const name = firstTrack.name
             const uri = firstTrack.uri
-            const previewUrl = firstTrack.previewUrl
+            const previewUrl = firstTrack.preview_url
 
-            console.log(firstTrack)
-            console.log(firstTrack.album)
-
-            return {
+            const mapped = {
                 trackId: trackId,
                 artists: artists,
                 images: images,
@@ -37,6 +34,8 @@ export class SpotifyUseCase {
                 uri: uri,
                 previewUrl: previewUrl
             }
+            console.log(mapped)
+            return mapped 
         })
         .catch(error => {
             return Error(error)

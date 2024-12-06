@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export class SpotifyRepository {
+export class TrackRepository {
 
     constructor() {
         this.authorization = process.env.TOKEN || ""

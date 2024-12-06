@@ -1,5 +1,5 @@
 export const getSpotifyPlayerCard = (songTrack) => {
-    const {imageUrl, songTitle, artists} = songTrack
+    const {imageUrl, songTitle, artists, audioUrl} = songTrack
     
     const cardScale = 2;
     const cardModifier = {
@@ -10,13 +10,23 @@ export const getSpotifyPlayerCard = (songTrack) => {
     const imageModifier = {
         width: 64 * cardScale,
         height: 64 * cardScale,
-        url: "https://i.scdn.co/image/ab67616d0000b273232711f7d66a1e19e89e28c5"
+        url: imageUrl
     }
 
     const textModifier = {
-        textX: 80,
-        titleY: 25,
-        artistY: 50 ,
+        textX: 80  * cardScale,
+        titleY: 15  * cardScale,
+        artistY: 25  * cardScale,
+        title: songTitle,
+        caption: artists
+    }
+
+    const audioModifier = {
+        url: audioUrl
+    }
+
+    const equalizerModifier = {
+        y: 80 * cardScale
     }
 
     const cardStyle = `
@@ -81,6 +91,9 @@ export const getSpotifyPlayerCard = (songTrack) => {
         xmlns:xlink="http://www.w3.org/1999/xlink"
     >
         ${cardStyle}
+        <video autoplay loop>
+            <source src="${audioModifier.url}" type="audio/mpeg" />
+        </video>
         <rect 
             height="${cardModifier.height}" 
             width="${cardModifier.width}" 
@@ -93,13 +106,13 @@ export const getSpotifyPlayerCard = (songTrack) => {
             class="song-title" 
             fill="white" x="${textModifier.textX}" y="${textModifier.titleY}"
         >
-            HEHEHE
+            ${textModifier.title}
         </text>
         <text 
             class="song-artist" 
             fill="white" x="${textModifier.textX}" y="${textModifier.artistY}"
         >
-            HEHEHE
+            ${textModifier.caption}
         </text>
         <image 
             class="album-image" 
@@ -111,10 +124,10 @@ export const getSpotifyPlayerCard = (songTrack) => {
             alt="Track Cover"
             clip-path="inset(0% round 15px)"
         />
-        <rect class="equalizer eq-fast" x="16" y="90" width="2"/>
-        <rect class="equalizer eq-medium" x="19" y="90" width="2"/>
-        <rect class="equalizer eq-quick" x="22" y="90" width="2"/>
-        <rect class="equalizer eq-slow" x="25" y="90" width="2"/>
+        <rect class="equalizer eq-fast" x="16" y="${equalizerModifier.y}" width="2"/>
+        <rect class="equalizer eq-medium" x="19" y="${equalizerModifier.y}" width="2"/>
+        <rect class="equalizer eq-quick" x="22" y="${equalizerModifier.y}" width="2"/>
+        <rect class="equalizer eq-slow" x="25" y="${equalizerModifier.y}" width="2"/>
         
     </svg>
   
