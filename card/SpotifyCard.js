@@ -7,7 +7,8 @@ export const getSpotifyPlayerCard = () => {
 
     const imageModifier = {
         width: 64 * cardScale,
-        height: 64 * cardScale
+        height: 64 * cardScale,
+        url: "https://i.scdn.co/image/ab67616d0000b273232711f7d66a1e19e89e28c5"
     }
 
     const textModifier = {
@@ -16,14 +17,12 @@ export const getSpotifyPlayerCard = () => {
         artistY: 50 ,
     }
 
-    return `
-    <svg 
-        height="${cardModifier.height}" 
-        width="${cardModifier.width}" 
-        xmlns="http://www.w3.org/2000/svg"  
-        xmlns:xlink="http://www.w3.org/1999/xlink"
-    >
+    const cardStyle = `
         <style>
+            .album-image {
+                border-radius: 4px;
+            }
+
             .song-title {
                 fill: #ffffff;
             }
@@ -33,11 +32,53 @@ export const getSpotifyPlayerCard = () => {
             }
 
             .equalizer {
-                stroke-width: 5;
-                stroke: #1DB954;
+                height: 2px;
+                rx: 1;
+                fill: #1DB954;
+                transform-box: fill-box;
+                transform: rotate(180deg) ;
                 animation-iteration-count: infinite;
+                animation-name: equalizer-anim;
+            }
+
+            .eq-slow {
+                animation-duration: 1.2s;
+            }
+
+            .eq-medium {
+                animation-duration: 1.0s;
+            }
+
+            .eq-quick {
+                animation-duration: 0.8s;
+            }
+
+            .eq-fast {
+                animation-duration: 0.6s;
+            }
+
+            @keyframes equalizer-anim {
+                0%, 100% {
+                    height: 2px;
+                }
+                50% {
+                    height: 8px;
+                }
+                60% {
+                    height: 11px;
+                }
             }
         </style>
+    `
+
+    return `
+    <svg 
+        height="${cardModifier.height}" 
+        width="${cardModifier.width}" 
+        xmlns="http://www.w3.org/2000/svg"  
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+    >
+        ${cardStyle}
         <rect 
             height="${cardModifier.height}" 
             width="${cardModifier.width}" 
@@ -64,15 +105,15 @@ export const getSpotifyPlayerCard = () => {
             width="${imageModifier.width}" 
             x="10"
             y="10"
-            href="https://i.scdn.co/image/ab67616d0000b273232711f7d66a1e19e89e28c5" 
+            href="${imageModifier.url}" 
             alt="Track Cover"
             clip-path="inset(0% round 15px)"
         />
-        <line 
-            class="equalizer"
-            x1="8" y1="90" x2="8" y2="70"
-        >
-        </line> 
+        <rect class="equalizer eq-fast" x="16" y="90" width="2"/>
+        <rect class="equalizer eq-medium" x="19" y="90" width="2"/>
+        <rect class="equalizer eq-quick" x="22" y="90" width="2"/>
+        <rect class="equalizer eq-slow" x="25" y="90" width="2"/>
+        
     </svg>
   
     `
