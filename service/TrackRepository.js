@@ -2,13 +2,13 @@ import axios from "axios"
 
 export class TrackRepository {
 
-    constructor(tokenConfig) {
+    constructor(clientToken, tokenConfig) {
         const {accessToken} = tokenConfig
 
         console.log(accessToken)
 
         this.authorization = accessToken || ""
-        this.clientToken = process.env.CLIENT_TOKEN || ""
+        this.clientToken = clientToken || ""
         this.spotConnectionId = process.env.CONNECTION_ID || ""
     }
 
@@ -33,7 +33,7 @@ export class TrackRepository {
             headers: { 
                 'accept': 'application/json', 
                 'accept-language': 'en-US,en;q=0.9,id;q=0.8', 
-                'authorization': this.authorization, 
+                'authorization': `Bearer ${this.authorization}`, 
                 'client-token': this.clientToken, 
                 'content-type': 'application/json', 
                 'origin': 'https://open.spotify.com', 

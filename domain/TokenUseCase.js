@@ -30,7 +30,20 @@ export class TokenUseCase {
         })
     }
 
-    async getClientToken() {
-        
+    async fetchClientToken(clientId) {
+        return this.repository.fetchClientToken(clientId)
+        .then(response => {
+            const data = response.data
+            const grantedToken = data.granted_token
+
+            const token = grantedToken.token
+            const expires = grantedToken.expires_after_seconds
+            const refreshAt = grantedToken.refresh_after_seconds
+
+            return token
+        })
+        .catch(error => {
+            return error 
+        })
     }
 }

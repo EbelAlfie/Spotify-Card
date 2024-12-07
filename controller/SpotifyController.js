@@ -4,7 +4,7 @@ import { TrackUseCase } from "../domain/TrackUseCase.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
 
-export const getSpotifyCard = async (request, response) => {
+const tokenHandler = async (response) => {
     const tokenRepository = new TokenRepository()
     const tokenUseCase = new TokenUseCase(tokenRepository)
 
@@ -13,10 +13,28 @@ export const getSpotifyCard = async (request, response) => {
     if (tokenObj instanceof Error) {
         response.status(500)
         response.send(tokenObj.message)
-        return
+        return {}
     }
 
-    const trackRepository = new TrackRepository(tokenObj)
+    const clientToken = await tokenUseCase.fetchClientToken({
+        clientId: tokenObj.clientId
+    })
+    if (clientToken instanceof Error) {
+        response.status(500)
+        response.send(clientToken.message)
+        return {}
+    }
+    
+    return {
+        clientToken: clientToken || "",
+        tokenObj: tokenObj || {}
+    }
+}
+
+export const getSpotifyCard = async (request, response) => {
+    const {clientToken, tokenObj} = await tokenHandler(response)
+
+    const trackRepository = new TrackRepository(clientToken, tokenObj)
     const trackUseCase = new TrackUseCase(trackRepository)
 
     const trackResult = await trackUseCase.getTrackById({
