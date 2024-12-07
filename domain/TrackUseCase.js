@@ -1,6 +1,6 @@
-export class SpotifyUseCase {
+export class TrackUseCase {
     constructor(trackRepository) {
-        if (trackRepository === undefined || trackRepository === null) 
+        if (!trackRepository) 
             throw Error("No repository provided")
         this.repository = trackRepository
     }
@@ -38,7 +38,7 @@ export class SpotifyUseCase {
             return mapped 
         })
         .catch(error => {
-            return Error(error)
+            return error
         })
     }
 }

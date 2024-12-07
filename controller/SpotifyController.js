@@ -1,14 +1,25 @@
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
-import { SpotifyUseCase } from "../domain/SpotifyUseCase.js"
+import { TokenUseCase } from "../domain/TokenUseCase.js"
+import { TrackUseCase } from "../domain/TrackUseCase.js"
+import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
 
 export const getSpotifyCard = async (request, response) => {
-    const trackRepository = new TrackRepository()
+    const tokenRepository = new TokenRepository()
+    const tokenUseCase = new TokenUseCase(tokenRepository)
 
+    const tokenObj = await tokenUseCase.fetchAccessToken()
 
-    const useCase = new SpotifyUseCase(trackRepository)
+    if (tokenObj instanceof Error) {
+        response.status(500)
+        response.send(tokenObj.message)
+        return
+    }
 
-    const trackResult = await useCase.getTrackById({
+    const trackRepository = new TrackRepository(tokenObj)
+    const trackUseCase = new TrackUseCase(trackRepository)
+
+    const trackResult = await trackUseCase.getTrackById({
         trackId: "0MJ5wsGpqu0gTJkx53ewxc"
     })
 

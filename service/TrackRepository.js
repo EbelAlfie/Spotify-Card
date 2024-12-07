@@ -2,8 +2,12 @@ import axios from "axios"
 
 export class TrackRepository {
 
-    constructor() {
-        this.authorization = process.env.TOKEN || ""
+    constructor(tokenConfig) {
+        const {accessToken} = tokenConfig
+
+        console.log(accessToken)
+
+        this.authorization = accessToken || ""
         this.clientToken = process.env.CLIENT_TOKEN || ""
         this.spotConnectionId = process.env.CONNECTION_ID || ""
     }
@@ -59,23 +63,23 @@ export class TrackRepository {
 
     async getTrackById(trackId) {
         let config = {
-        method: 'get',
-        maxBodyLength: Infinity,
-        url: `https://api.spotify.com/v1/tracks?ids=${trackId}&market=from_token`,
-        headers: { 
-            'sec-ch-ua-platform': '"Linux"', 
-            'authorization': this.authorization, 
-            'Referer': 'https://open.spotify.com/', 
-            'client-token': this.clientToken, 
-            'sec-ch-ua': '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"', 
-            'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 
-            'sec-ch-ua-mobile': '?0'
-        }
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `https://api.spotify.com/v1/tracks?ids=${trackId}&market=from_token`,
+            headers: { 
+                'sec-ch-ua-platform': '"Linux"', 
+                'authorization': `Bearer ${this.authorization}`, 
+                'Referer': 'https://open.spotify.com/', 
+                'client-token': this.clientToken, 
+                'sec-ch-ua': '"Microsoft Edge";v="131", "Chromium";v="131", "Not_A Brand";v="24"', 
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0', 
+                'sec-ch-ua-mobile': '?0'
+            }
         };
 
         return axios.request(config)
         .then((response) => {
-            console.log(response.data)
+            console.log(JSON.stringify(response.data))
             return response
         })
     }
