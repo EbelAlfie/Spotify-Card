@@ -1,5 +1,5 @@
-import express from "express"
-import { SpotifyRoute } from "./route/Spotify.js"
+import express, { type Express } from "express";
+import { SpotifyRoute } from "./route/Spotify"
 
 const app = express()
 

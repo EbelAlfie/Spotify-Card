@@ -1,14 +1,14 @@
 import axios from "axios";
 
 export class TokenRepository {
-
+    me: string| undefined 
+    
     constructor() {
         this.me = process.env.ME
+        console.log(process.env.ME)
     }
 
-    async fetchClientToken(request) {
-        const {clientId} = request
-
+    async fetchClientToken(clientId: string) {
         let config = {
             method: 'post',
             url: "https://clienttoken.spotify.com/v1/clienttoken",

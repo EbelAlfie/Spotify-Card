@@ -1,18 +1,18 @@
 import axios from "axios"
+import { ClientTokenEntity, TokenEntity } from "../domain/entity/TokenEntity"
 
 export class TrackRepository {
+    authorization: string
+    clientToken: string
+    spotConnectionId: string
 
-    constructor(clientToken, tokenConfig) {
-        const {accessToken} = tokenConfig
-
-        console.log(accessToken)
-
-        this.authorization = accessToken || ""
-        this.clientToken = clientToken || ""
+    constructor(clientToken: ClientTokenEntity, tokenConfig: TokenEntity) {
+        this.authorization = tokenConfig.accessToken || ""
+        this.clientToken = clientToken.clientToken || ""
         this.spotConnectionId = process.env.CONNECTION_ID || ""
     }
 
-    async getLastDeviceState(request) {
+    async getLastDeviceState() {
         let data = JSON.stringify({
             "member_type": "CONNECT_STATE",
             "device": {
@@ -61,7 +61,7 @@ export class TrackRepository {
         });
     }
 
-    async getTrackById(trackId) {
+    async getTrackById(trackId: string) {
         let config = {
             method: 'get',
             maxBodyLength: Infinity,

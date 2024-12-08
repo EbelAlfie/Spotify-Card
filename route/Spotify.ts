@@ -1,4 +1,4 @@
-import { getSpotifyCard } from "../controller/SpotifyController.js";
+import { getSpotifyCard } from "../controller/SpotifyController";
 
 export const SpotifyRoute = {
     Route: "/", 

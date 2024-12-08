@@ -3,14 +3,19 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "deploy": "node --env-file=.env index.js"
+    "deploy": "node -r ts-node/register --env-file=.env index.ts"
   },
-  "type": "module",
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "axios": "^1.7.9",
-    "express": "^4.21.1"
+    "axios": "^1.7.9"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.1",
+    "express": "^4.21.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
   }
 }

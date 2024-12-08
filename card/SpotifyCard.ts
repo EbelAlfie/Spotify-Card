@@ -1,5 +1,12 @@
-export const getSpotifyPlayerCard = (songTrack) => {
-    const {imageUrl, songTitle, artists, audioUrl} = songTrack
+type SpotifyCardConfig = {
+    imageUrl: string 
+    songTitle: string
+    artists: string
+    audioUrl: string
+}
+
+export const getSpotifyPlayerCard = (config: SpotifyCardConfig) => {
+    const {imageUrl, songTitle, artists, audioUrl} = config
     
     const cardScale = 2;
     const cardModifier = {

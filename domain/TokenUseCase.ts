@@ -1,12 +1,18 @@
+import { TokenRepository } from "../service/TokenRepository"
+import { ClientTokenEntity, TokenEntity } from "./entity/TokenEntity"
+import { ClientTokenRequest } from "./models/Request"
+
 export class TokenUseCase {
-    constructor(repository) {
+    repository: TokenRepository
+
+    constructor(repository: TokenRepository) {
         if (!repository) 
             throw Error("No repository provided")
 
         this.repository = repository
     }
 
-    async fetchAccessToken() {
+    async fetchAccessToken(): Promise<TokenEntity> {
         return this.repository.fetchAccessToken()
         .then(response => {
 
@@ -17,7 +23,7 @@ export class TokenUseCase {
             const accessTokenExpirationTimestampMs = data?.accessTokenExpirationTimestampMs ?? 0
             const isAnonymous= data?.isAnonymous ?? ""
 
-            const token = {
+            const token: TokenEntity = {
                 clientId: clientId,
                 accessToken: accessToken,
                 accessTokenExpirationTimestampMs: accessTokenExpirationTimestampMs,
@@ -31,8 +37,8 @@ export class TokenUseCase {
         })
     }
 
-    async fetchClientToken(clientId) {
-        return this.repository.fetchClientToken(clientId)
+    async fetchClientToken(request: ClientTokenRequest): Promise<ClientTokenEntity> {
+        return this.repository.fetchClientToken(request.clientId)
         .then(response => {
             const data = response.data
             const grantedToken = data.granted_token
@@ -41,7 +47,9 @@ export class TokenUseCase {
             const expires = grantedToken?.expires_after_seconds ?? 0
             const refreshAt = grantedToken?.refresh_after_seconds ?? 0
 
-            return token
+            return {
+                clientToken: token
+            }
         })
         .catch(error => {
             console.log(error)
