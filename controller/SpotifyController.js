@@ -13,26 +13,27 @@ const tokenHandler = async (response) => {
     if (tokenObj instanceof Error) {
         response.status(500)
         response.send(tokenObj.message)
-        return {}
+        return 
     }
 
     const clientToken = await tokenUseCase.fetchClientToken({
-        clientId: tokenObj.clientId
+        clientId: tokenObj?.clientId
     })
     if (clientToken instanceof Error) {
         response.status(500)
         response.send(clientToken.message)
-        return {}
+        return 
     }
     
     return {
-        clientToken: clientToken || "",
-        tokenObj: tokenObj || {}
+        clientToken: clientToken,
+        tokenObj: tokenObj
     }
 }
 
 export const getSpotifyCard = async (request, response) => {
     const {clientToken, tokenObj} = await tokenHandler(response)
+    if (!clientToken || !tokenObj) return 
 
     const trackRepository = new TrackRepository(clientToken, tokenObj)
     const trackUseCase = new TrackUseCase(trackRepository)
@@ -47,7 +48,7 @@ export const getSpotifyCard = async (request, response) => {
         return
     }
 
-    const image = trackResult.images[0].url || ""
+    const image = trackResult.images.length > 0 ? trackResult?.images[0]?.url : ""
 
     const spotifyCard = getSpotifyPlayerCard(
         {
