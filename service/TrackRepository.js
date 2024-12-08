@@ -2,14 +2,12 @@ import axios from "axios"
 
 export class TrackRepository {
 
-    constructor(clientToken, tokenConfig) {
-        const {accessToken} = tokenConfig
+    constructor(tokenConfig) {
+        const {clientToken = "", accessToken = ""} = tokenConfig
 
-        console.log(accessToken)
-
-        this.authorization = accessToken || ""
-        this.clientToken = clientToken || ""
-        this.spotConnectionId = process.env.CONNECTION_ID || ""
+        this.authorization = accessToken ?? ""
+        this.clientToken = clientToken ?? ""
+        this.spotConnectionId = process.env.CONNECTION_ID ?? ""
     }
 
     async getLastDeviceState(request) {
@@ -52,13 +50,6 @@ export class TrackRepository {
         };
         
         return axios.request(config)
-        .then((response) => {
-            console.log(JSON.stringify(response.data));
-            return response.data
-        })
-        .catch((error) => {
-            console.log(error);
-        });
     }
 
     async getTrackById(trackId) {
@@ -78,9 +69,5 @@ export class TrackRepository {
         };
 
         return axios.request(config)
-        .then((response) => {
-            console.log(JSON.stringify(response.data))
-            return response
-        })
     }
 }

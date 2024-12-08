@@ -26,16 +26,16 @@ const tokenHandler = async (response) => {
     }
     
     return {
-        clientToken: clientToken,
-        tokenObj: tokenObj
+        ...clientToken,
+        ...tokenObj
     }
 }
 
 export const getSpotifyCard = async (request, response) => {
-    const {clientToken, tokenObj} = await tokenHandler(response)
-    if (!clientToken || !tokenObj) return 
+    const tokens = await tokenHandler(response)
+    if (!tokens) return 
 
-    const trackRepository = new TrackRepository(clientToken, tokenObj)
+    const trackRepository = new TrackRepository(tokens)
     const trackUseCase = new TrackUseCase(trackRepository)
 
     const trackResult = await trackUseCase.getTrackById({
@@ -48,13 +48,13 @@ export const getSpotifyCard = async (request, response) => {
         return
     }
 
-    const image = trackResult.images.length > 0 ? trackResult?.images[0]?.url : ""
+    const image = trackResult.images?.length > 0 ? trackResult?.images[0]?.url : ""
 
     const spotifyCard = getSpotifyPlayerCard(
         {
             imageUrl: image, 
             songTitle: trackResult.name, 
-            artists: trackResult.artists.map(item => item.name).join(", "),
+            artists: trackResult.artists?.map(item => item.name).join(", "),
             audioUrl: trackResult.previewUrl
         }
     )

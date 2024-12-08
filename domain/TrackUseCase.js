@@ -13,8 +13,10 @@ export class TrackUseCase {
         const {trackId} = params
 
         return this.repository.getTrackById(trackId)
-        .then(result => {
-            const tracks = result.data.tracks
+        .then(response => {
+            console.log(JSON.stringify(response.data));
+            
+            const tracks = response.data.tracks
             const firstTrack = tracks[0] 
             const album = firstTrack.album
 
@@ -27,17 +29,18 @@ export class TrackUseCase {
             const previewUrl = firstTrack.preview_url
 
             const mapped = {
-                trackId: trackId,
-                artists: artists,
-                images: images,
-                name: name,
-                uri: uri,
-                previewUrl: previewUrl
+                trackId: trackId ?? "",
+                artists: artists ?? [],
+                images: images ?? [],
+                name: name ?? "",
+                uri: uri ?? "",
+                previewUrl: previewUrl ?? ""
             }
             console.log(mapped)
             return mapped 
         })
         .catch(error => {
+            console.log(error)
             return error
         })
     }
