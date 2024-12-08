@@ -18,13 +18,13 @@ export class TrackUseCase {
             const firstTrack = tracks[0] 
             const album = firstTrack.album
 
-            const trackId = firstTrack.id
-            const artists = firstTrack.artists
-            const images = album.images
+            const trackId = firstTrack.id || ""
+            const artists = firstTrack.artists || ""
+            const images = album.images || []
 
-            const name = firstTrack.name
-            const uri = firstTrack.uri
-            const previewUrl = firstTrack.preview_url
+            const name = firstTrack.name || ""
+            const uri = firstTrack.uri || ""
+            const previewUrl = firstTrack.preview_url || ""
 
             const mapped = {
                 trackId: trackId,

@@ -12,10 +12,10 @@ export class TokenUseCase {
 
             const data = response.data
 
-            const clientId = data.clientId
-            const accessToken= data.accessToken
-            const accessTokenExpirationTimestampMs= data.accessTokenExpirationTimestampMs
-            const isAnonymous= data.isAnonymous
+            const clientId = data?.clientId ?? ""
+            const accessToken= data?.accessToken ?? ""
+            const accessTokenExpirationTimestampMs = data?.accessTokenExpirationTimestampMs ?? 0
+            const isAnonymous= data?.isAnonymous ?? ""
 
             const token = {
                 clientId: clientId,
@@ -26,6 +26,7 @@ export class TokenUseCase {
             return token 
         })
         .catch(error => {
+            console.log(error)
             return error
         })
     }
@@ -36,14 +37,15 @@ export class TokenUseCase {
             const data = response.data
             const grantedToken = data.granted_token
 
-            const token = grantedToken.token
-            const expires = grantedToken.expires_after_seconds
-            const refreshAt = grantedToken.refresh_after_seconds
+            const token = grantedToken?.token ?? ""
+            const expires = grantedToken?.expires_after_seconds ?? 0
+            const refreshAt = grantedToken?.refresh_after_seconds ?? 0
 
             return token
         })
         .catch(error => {
-            return error 
+            console.log(error)
+            return error
         })
     }
 }
