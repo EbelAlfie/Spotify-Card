@@ -7,8 +7,8 @@ export const getErrorCard = (message) => {
         radius: 8
     }
     const error = {
-        x: 0,
-        y: 0,
+        x: cardModifier.width / 4,
+        y: cardModifier.height / 2,
         text: message
     }
     return `
@@ -19,6 +19,9 @@ export const getErrorCard = (message) => {
             xmlns:xlink="http://www.w3.org/1999/xlink"
         > 
             <defs>
+                <script>
+                    setInterval(() => { location.reload() }, 60000) ;
+                </script>
                 <style>
                     .warning-text{
                         fill: #ffffff;

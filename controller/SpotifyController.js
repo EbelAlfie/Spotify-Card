@@ -1,3 +1,4 @@
+import { getErrorCard } from "../card/ErrorCard.js"
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
 import { TrackUseCase } from "../domain/TrackUseCase.js"
@@ -12,7 +13,7 @@ const tokenHandler = async (response) => {
 
     if (tokenObj instanceof Error) {
         response.status(500)
-        response.send(tokenObj.message)
+        response.send(getErrorCard(tokenObj.message))
         return 
     }
 
@@ -21,7 +22,7 @@ const tokenHandler = async (response) => {
     })
     if (clientToken instanceof Error) {
         response.status(500)
-        response.send(clientToken.message)
+        response.send(getErrorCard(clientToken.message))
         return 
     }
     
@@ -41,7 +42,7 @@ export const getSpotifyCard = async (request, response) => {
     const currentTrack = await trackUseCase.getLastDeviceState()
     if (currentTrack instanceof Error) {
         response.status(500)
-        response.send(currentTrack.message)
+        response.send(getErrorCard(currentTrack.message))
         return
     }
 
@@ -51,7 +52,7 @@ export const getSpotifyCard = async (request, response) => {
 
     if (trackResult instanceof Error) {
         response.status(500)
-        response.send(trackResult.message)
+        response.send(getErrorCard(trackResult.message))
         return
     }
 
