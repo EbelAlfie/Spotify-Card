@@ -5,8 +5,26 @@ export class TrackUseCase {
         this.repository = trackRepository
     }
 
-    async getLastDeviceState(params) {
-        return this.repository.getLastDeviceState(params)
+    async getLastDeviceState() {
+        return this.repository.getLastDeviceState()
+        .then(response => {            
+            const playerState = response.data.player_state
+
+            const isPlaying = playerState.is_playing
+            const track = playerState?.track
+
+            const uri = track?.uri?.replace("spotify:track:", "")
+            const mappedData = {
+                isPlaying: isPlaying ?? false,
+                trackUri: uri ?? ""
+            }
+
+            return mappedData
+        })
+        .catch(error => {
+            console.log(error)
+            return error
+        })
     }
 
     async getTrackById(params) {

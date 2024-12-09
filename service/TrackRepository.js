@@ -10,7 +10,7 @@ export class TrackRepository {
         this.spotConnectionId = process.env.CONNECTION_ID ?? ""
     }
 
-    async getLastDeviceState(request) {
+    async getLastDeviceState() {
         let data = JSON.stringify({
             "member_type": "CONNECT_STATE",
             "device": {
@@ -27,7 +27,7 @@ export class TrackRepository {
         let config = {
             method: 'put',
             maxBodyLength: Infinity,
-            url: 'https://gew4-spclient.spotify.com/connect-state/v1/devices/', //TODO ada yang dihapus
+            url: 'https://gew4-spclient.spotify.com/connect-state/v1/devices/hobs_86133792d6f7240c655de45fa6bc7f30527',
             headers: { 
                 'accept': 'application/json', 
                 'accept-language': 'en-US,en;q=0.9,id;q=0.8', 
