@@ -11,6 +11,7 @@ export const getSpotifyPlayerCard = (config) => {
     const cardModifier = {
         width: 300 * cardScale,
         height: 100 * cardScale,
+        radius: 8
     }
 
     const imageModifier = {
@@ -119,13 +120,16 @@ export const getSpotifyPlayerCard = (config) => {
         <video autoplay loop>
             <source src="${audioModifier.url}" type="audio/mpeg" />
         </video>
+        <script>
+            setInterval(() => { location.reload() }, 60000) ;
+        </script>
         <rect 
             height="${cardModifier.height}" 
             width="${cardModifier.width}" 
             x="0" 
             y="0"
-            rx="4"
-            ry="4"
+            rx="${cardModifier.radius}"
+            ry="${cardModifier.radius}"
         />
         <text 
             class="song-title" 
