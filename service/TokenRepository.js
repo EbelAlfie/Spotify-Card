@@ -1,13 +1,17 @@
 import axios from "axios";
+import { AxiosRetry } from "./AxiosRetry.js";
 
 export class TokenRepository {
+    axiosRetry = new AxiosRetry()
 
     constructor() {
         this.me = process.env.ME
     }
 
     async fetchClientToken(request) {
-        const {clientId} = request
+        const {
+            clientId = ""
+        } = request
 
         let config = {
             method: 'post',
@@ -32,9 +36,8 @@ export class TokenRepository {
             }
         };
 
-        return axios.request(config)
+        return this.axiosRetry.request(config)
         .then(token => {
-            console.log(JSON.stringify(token.data))
             return token
         })
     }
@@ -48,9 +51,8 @@ export class TokenRepository {
             url: "https://open.spotify.com/get_access_token?reason=transport&productType=web-player"
         }
 
-        return axios.request(config)
+        return this.axiosRetry.request(config)
         .then(result => {
-            console.log(`ACCToken ${JSON.stringify(result.data)}`)
             return result
         })
     }

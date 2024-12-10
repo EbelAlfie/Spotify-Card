@@ -6,6 +6,7 @@ const app = express()
 app.get(SpotifyRoute.Route, SpotifyRoute.Controller)
 
 console.log("Starting server...")
-app.listen("3030", () => {
-    console.log(`Server started at 3030`)
+const port = "3030"
+app.listen(port, () => {
+    console.log(`Server started at ${port}`)
 })

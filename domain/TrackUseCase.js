@@ -28,7 +28,9 @@ export class TrackUseCase {
     }
 
     async getTrackById(params) {
-        const {trackId} = params
+        const {
+            trackId = ""
+        } = params
 
         return this.repository.getTrackById(trackId)
         .then(response => {

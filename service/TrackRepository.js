@@ -1,9 +1,14 @@
 import axios from "axios"
+import { AxiosRetry } from "./AxiosRetry.js"
 
 export class TrackRepository {
+    axiosRetry = new AxiosRetry()
 
     constructor(tokenConfig) {
-        const {clientToken = "", accessToken = ""} = tokenConfig
+        const {
+            clientToken = "", 
+            accessToken = ""
+        } = tokenConfig
 
         this.authorization = accessToken ?? ""
         this.clientToken = clientToken ?? ""
@@ -49,7 +54,7 @@ export class TrackRepository {
             data : data
         };
         
-        return axios.request(config)
+        return this.axiosRetry.request(config)
     }
 
     async getTrackById(trackId) {
@@ -68,6 +73,6 @@ export class TrackRepository {
             }
         };
 
-        return axios.request(config)
+        return this.axiosRetry.request(config)
     }
 }
