@@ -38,7 +38,7 @@ export class TokenRepository {
             (response) => response,
             (error) => {
                 console.log(`HAHAHAHAHHA ${error}`)
-                if (error.status === 401) 
+                if (error.status === 401 || error.status === 400) 
                     return this.fetchRefreshToken()
                 else return Promise.reject(error)
             }
@@ -63,6 +63,8 @@ export class TokenRepository {
         
         return axiosRetry.request(config)
         .then(result => {
+            this.refreshToken = result.refresh_token
+            this.authorization = result.access_token
             return result
         })
     }

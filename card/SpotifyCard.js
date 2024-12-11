@@ -4,7 +4,8 @@ export const getSpotifyPlayerCard = (config) => {
         songTitle = "", 
         artists = "", 
         audioUrl = "", 
-        isPlaying = false
+        isPlaying = false,
+        refresh = 60000
     } = config
     
     const cardScale = 2;
@@ -121,7 +122,7 @@ export const getSpotifyPlayerCard = (config) => {
             <source src="${audioModifier.url}" type="audio/mpeg" />
         </video>
         <script>
-            setInterval(() => { location.reload() }, 120000) ;
+            setInterval(() => { location.reload() }, ${refresh}) ;
         </script>
         <rect 
             height="${cardModifier.height}" 

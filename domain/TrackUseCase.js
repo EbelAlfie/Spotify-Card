@@ -11,6 +11,7 @@ export class TrackUseCase {
             
             const track = response.data.item
             const data = response.data
+            console.log(data)
 
             const album = track.album
 
@@ -23,6 +24,9 @@ export class TrackUseCase {
             const previewUrl = track.preview_url
             const isPlaying = data.is_playing
 
+            const progress = data.progress_ms ?? 0
+            const trackDuration = track.duration_ms ?? 0
+
             const mapped = {
                 trackId: trackId ?? "",
                 artists: artists ?? [],
@@ -30,7 +34,8 @@ export class TrackUseCase {
                 name: name ?? "",
                 uri: uri ?? "",
                 previewUrl: previewUrl ?? "",
-                isPlaying: isPlaying ?? ""
+                isPlaying: isPlaying ?? "",
+                refresh: trackDuration - progress ?? 0
             }
             return mapped 
         })

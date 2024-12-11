@@ -58,7 +58,8 @@ export const getSpotifyCard = async (request, response) => {
             songTitle: currentTrack.name, 
             artists: currentTrack.artists?.map(item => item.name).join(", "),
             audioUrl: currentTrack.previewUrl,
-            isPlaying: currentTrack.isPlaying
+            isPlaying: currentTrack.isPlaying,
+            refresh: currentTrack.progress
         }
     )
 
