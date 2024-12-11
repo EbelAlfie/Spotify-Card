@@ -9,17 +9,19 @@ export class TrackUseCase {
         return this.repository.getCurrentPlayingTrack()
         .then(response => {
             
-            const data = response.data.item
+            const track = response.data.item
+            const data = response.data
 
-            const album = data.album
+            const album = track.album
 
-            const trackId = data.id
-            const artists = data.artists
+            const trackId = track.id
+            const artists = track.artists
             const images = album.images
 
-            const name = data.name
-            const uri = data.uri
-            const previewUrl = data.preview_url
+            const name = track.name
+            const uri = track.uri
+            const previewUrl = track.preview_url
+            const isPlaying = data.is_playing
 
             const mapped = {
                 trackId: trackId ?? "",
@@ -27,9 +29,9 @@ export class TrackUseCase {
                 images: images ?? [],
                 name: name ?? "",
                 uri: uri ?? "",
-                previewUrl: previewUrl ?? ""
+                previewUrl: previewUrl ?? "",
+                isPlaying: isPlaying ?? ""
             }
-            console.log(mapped)
             return mapped 
         })
         .catch(error => {

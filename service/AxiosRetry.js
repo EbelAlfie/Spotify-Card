@@ -20,7 +20,6 @@ class AxiosRetry {
                     return Promise.reject(error)
             }
         )
-
     }
 
     async request(req) {

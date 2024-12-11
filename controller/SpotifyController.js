@@ -2,6 +2,7 @@ import { getErrorCard } from "../card/ErrorCard.js"
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
 import { TrackUseCase } from "../domain/TrackUseCase.js"
+import { AuthRoute } from "../route/Spotify.js"
 import { axiosRetry } from "../service/AxiosRetry.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
@@ -11,6 +12,11 @@ const tokenHandler = async (code, response) => {
     const tokenUseCase = new TokenUseCase(tokenRepository)
 
     const tokenObj = await tokenUseCase.fetchAccessToken()
+
+    if (tokenObj instanceof Error && tokenObj.status === 400) {
+        response.redirect(AuthRoute.Route)
+        return 
+    }
 
     if (tokenObj instanceof Error) {
         response.status(500)
