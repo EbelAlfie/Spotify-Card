@@ -23,6 +23,7 @@ export class TrackUseCase {
             const uri = track.uri
             const previewUrl = track.preview_url
             const isPlaying = data.is_playing
+            const isPaused = data.is_paused
 
             const progress = data.progress_ms ?? 0
             const trackDuration = track.duration_ms ?? 0
@@ -34,7 +35,7 @@ export class TrackUseCase {
                 name: name ?? "",
                 uri: uri ?? "",
                 previewUrl: previewUrl ?? "",
-                isPlaying: isPlaying ?? "",
+                isPlaying: (isPlaying && !isPaused) ?? false,
                 refresh: trackDuration - progress ?? 0
             }
             return mapped 
