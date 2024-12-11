@@ -5,21 +5,32 @@ export class TrackUseCase {
         this.repository = trackRepository
     }
 
-    async getLastDeviceState() {
-        return this.repository.getLastDeviceState()
-        .then(response => {            
-            const playerState = response.data.player_state
+    async getCurrentPlayingTrack() {
+        return this.repository.getCurrentPlayingTrack()
+        .then(response => {
+            
+            const data = response.data.item
 
-            const isPlaying = playerState.is_playing
-            const track = playerState?.track
+            const album = data.album
 
-            const uri = track?.uri?.replace("spotify:track:", "")
-            const mappedData = {
-                isPlaying: isPlaying ?? false,
-                trackUri: uri ?? ""
+            const trackId = data.id
+            const artists = data.artists
+            const images = album.images
+
+            const name = data.name
+            const uri = data.uri
+            const previewUrl = data.preview_url
+
+            const mapped = {
+                trackId: trackId ?? "",
+                artists: artists ?? [],
+                images: images ?? [],
+                name: name ?? "",
+                uri: uri ?? "",
+                previewUrl: previewUrl ?? ""
             }
-
-            return mappedData
+            console.log(mapped)
+            return mapped 
         })
         .catch(error => {
             console.log(error)

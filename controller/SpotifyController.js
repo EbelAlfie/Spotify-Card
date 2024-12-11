@@ -37,31 +37,21 @@ export const getSpotifyCard = async (request, response) => {
     const trackRepository = new TrackRepository(tokens)
     const trackUseCase = new TrackUseCase(trackRepository)
 
-    const currentTrack = await trackUseCase.getLastDeviceState()
+    const currentTrack = await trackUseCase.getCurrentPlayingTrack()
     if (currentTrack instanceof Error) {
         response.status(500)
         response.send(getErrorCard(currentTrack.message))
         return
     }
 
-    const trackResult = await trackUseCase.getTrackById({
-        trackId: currentTrack.trackUri
-    })
-
-    if (trackResult instanceof Error) {
-        response.status(500)
-        response.send(getErrorCard(trackResult.message))
-        return
-    }
-
-    const image = trackResult.images?.length > 0 ? trackResult?.images[0]?.url : ""
+    const image = currentTrack.images?.length > 0 ? currentTrack?.images[0]?.url : ""
 
     const spotifyCard = getSpotifyPlayerCard(
         {
             imageUrl: image, 
-            songTitle: trackResult.name, 
-            artists: trackResult.artists?.map(item => item.name).join(", "),
-            audioUrl: trackResult.previewUrl,
+            songTitle: currentTrack.name, 
+            artists: currentTrack.artists?.map(item => item.name).join(", "),
+            audioUrl: currentTrack.previewUrl,
             isPlaying: currentTrack.isPlaying
         }
     )
