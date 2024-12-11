@@ -17,18 +17,8 @@ const tokenHandler = async (code, response) => {
         response.send(getErrorCard(tokenObj.message))
         return 
     }
-
-    const clientToken = await tokenUseCase.fetchClientToken({
-        clientId: tokenObj?.clientId
-    })
-    if (clientToken instanceof Error) {
-        response.status(500)
-        response.send(getErrorCard(clientToken.message))
-        return 
-    }
     
     return {
-        ...clientToken,
         ...tokenObj
     }
 }
@@ -40,7 +30,7 @@ export const getSpotifyCard = async (request, response) => {
     } = request.query
 
     axiosRetry.setMaxRetry()
-    
+
     const tokens = await tokenHandler(code, response)
     if (!tokens) return 
 

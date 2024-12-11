@@ -1,52 +1,29 @@
 import axios from "axios";
 import { axiosRetry } from "./AxiosRetry.js";
+import { getToken } from "./Utils.js";
+import { Config } from "../index.js";
+import { SpotifyRoute } from "../route/Spotify.js";
 
 export class TokenRepository {
     constructor(code) {
         this.me = code
     }
 
-    async fetchClientToken(request) {
-        const {
-            clientId = ""
-        } = request
-
-        let config = {
-            method: 'post',
-            url: "https://clienttoken.spotify.com/v1/clienttoken",
-            headers: { 
-                "content-type": "application/json",
-                "accept": "application/json"
-            },
-            data: {
-                client_data: {
-                    client_version: "1.2.53.257.g47fa6c39",
-                    client_id: clientId,
-                    js_sdk_data: {
-                        device_brand: "unknown",
-                        device_model: "unknown",
-                        os: "linux",
-                        os_version: "unknown",
-                        device_id: "hehee",
-                        device_type: "computer"
-                    }
-                }
-            }
-        };
-
-        return axiosRetry.request(config)
-        .then(token => {
-            return token
-        })
-    }
-
     async fetchAccessToken() {
+        const requestBody = {
+            grant_type: "authorization_code",
+            code: this.me,
+            redirect_uri: Config.baseUrl + SpotifyRoute.Route
+        }
+
         const config = {
-            method: "get",
+            method: "post",
             headers: {
-                "cookie": `sp_dc=${this.me};`
+                'authorization': `Basic ${getToken()}`,
+                'Content-Type': "application/x-www-form-urlencoded"
             },
-            url: "https://open.spotify.com/get_access_token?reason=transport&productType=web-player"
+            url: "https://accounts.spotify.com/api/token",
+            data: requestBody
         }
 
         return axiosRetry.request(config)
