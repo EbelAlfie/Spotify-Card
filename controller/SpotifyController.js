@@ -2,11 +2,12 @@ import { getErrorCard } from "../card/ErrorCard.js"
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
 import { TrackUseCase } from "../domain/TrackUseCase.js"
+import { axiosRetry } from "../service/AxiosRetry.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
 
-const tokenHandler = async (response) => {
-    const tokenRepository = new TokenRepository()
+const tokenHandler = async (code, response) => {
+    const tokenRepository = new TokenRepository(code)
     const tokenUseCase = new TokenUseCase(tokenRepository)
 
     const tokenObj = await tokenUseCase.fetchAccessToken()
@@ -33,8 +34,14 @@ const tokenHandler = async (response) => {
 }
 
 export const getSpotifyCard = async (request, response) => {
-    console.log(request)
-    const tokens = await tokenHandler(response)
+    console.log(request.query)
+    const {
+        code = ""
+    } = request.query
+
+    axiosRetry.setMaxRetry()
+    
+    const tokens = await tokenHandler(code, response)
     if (!tokens) return 
 
     const trackRepository = new TrackRepository(tokens)

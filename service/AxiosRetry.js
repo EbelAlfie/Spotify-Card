@@ -1,30 +1,35 @@
 import axios from "axios";
 
-export class AxiosRetry {
-    MAX_RETRY = 5
+class AxiosRetry {
+    MAX_RETRY = 3
+    countDown = this.MAX_RETRY
 
     setMaxRetry(retry) {
         this.MAX_RETRY = retry
+
+        axios.interceptors.response.use(
+            (response) => {
+                return response
+            }, 
+            (error) => {
+                this.countDown -= 1
+
+                if (this.countDown > 0)
+                    return axios.request(error.config)
+                else
+                    return Promise.reject(error)
+            }
+        )
+
     }
 
-    async request(req, retryCount = this.MAX_RETRY) {
-        axios.interceptors.response.use((response) => {
-            return response;
-        }, (error) => {
-            return axios.request(error.config);
-            // return Promise.reject(error);
-        });
+    async request(req) {
+        if (this.countDown < 0) 
+            this.countDown = this.MAX_RETRY
 
         return axios.request(req)
-        // .catch(error => {
-        //     if (retryCount - 1 >= 0) this.#handleRetry(req, retryCount - 1)
-
-        //     // Promise.reject(error)
-        // })
-    }
-
-    async #handleRetry(req, retryCount) {
-        return this.request(req, retryCount)
     }
 
 }
+
+export const axiosRetry = new AxiosRetry()
