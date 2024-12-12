@@ -6,6 +6,7 @@ import { AuthRoute } from "../route/Spotify.js"
 import { axiosRetry } from "../service/AxiosRetry.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
+import { spotifyError } from "../service/Utils.js"
 
 const tokenHandler = async (code, response) => {
     const tokenRepository = new TokenRepository(code)
@@ -43,11 +44,20 @@ export const getSpotifyCard = async (request, response) => {
     const trackRepository = new TrackRepository(tokens)
     const trackUseCase = new TrackUseCase(trackRepository)
 
-    const currentTrack = await trackUseCase.getCurrentPlayingTrack()
-    if (currentTrack instanceof Error) {
+    let currentTrack = await trackUseCase.getCurrentPlayingTrack()
+    if (currentTrack instanceof Error && spotifyError(currentTrack)) {
         response.status(500)
         response.send(getErrorCard(currentTrack.message))
         return
+    }
+
+    if (currentTrack instanceof Error && !spotifyError(currentTrack)) {
+        currentTrack = await trackUseCase.getLastPlayedTrack() 
+        if (currentTrack instanceof Error) {
+            response.status(500)
+            response.send(getErrorCard(currentTrack.message))
+            return
+        }
     }
 
     const image = currentTrack.images?.length > 0 ? currentTrack?.images[0]?.url : ""

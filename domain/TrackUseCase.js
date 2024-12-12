@@ -46,6 +46,42 @@ export class TrackUseCase {
         })
     }
 
+    async getLastPlayedTrack() {
+        return this.repository.getLastPlayedTrack()
+        .then(response => {
+            
+            const track = response.data.items[0]
+
+            const album = track.album
+
+            const trackId = track.id
+            const artists = track.artists
+            const images = album.images
+
+            const name = track.name
+            const uri = track.uri
+            const previewUrl = track.preview_url
+
+            const trackDuration = track.duration_ms ?? 0
+
+            const mapped = {
+                trackId: trackId ?? "",
+                artists: artists ?? [],
+                images: images ?? [],
+                name: name ?? "",
+                uri: uri ?? "",
+                previewUrl: previewUrl ?? "",
+                isPlaying: false,
+                refresh: trackDuration ?? 0
+            }
+            return mapped 
+        })
+        .catch(error => {
+            console.log(error)
+            return error
+        })
+    }
+
     async getTrackById(params) {
         const {
             trackId = ""

@@ -22,9 +22,22 @@ export class TrackRepository {
         return axiosRetry.request(config)
     }
 
+    async getRecentlyPlayed() {
+        let config = {
+            method: "GET",
+            maxBodyLength: Infinity,
+            headers: { 
+                'authorization': `Bearer ${this.authorization}`, 
+            },
+            url: `https://api.spotify.com/v1/me/player/recently-played`
+        }
+
+        return axiosRetry.request(config)
+    }
+
     async getTrackById(trackId) {
         let config = {
-            method: 'get',
+            method: 'GET',
             maxBodyLength: Infinity,
             url: `https://api.spotify.com/v1/tracks?ids=${trackId}&market=from_token`,
             headers: { 
