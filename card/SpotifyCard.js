@@ -45,7 +45,7 @@ export const getSpotifyPlayerCard = (config) => {
     const stat = {
         x: 30,
         y: equalizerModifier.y,//cardModifier.height - 10,
-        text: isPlaying ? "Is Playing" : "Not Playing"
+        text: isPlaying ? "Playing" : "Paused"
     }
 
     const cardStyle = `

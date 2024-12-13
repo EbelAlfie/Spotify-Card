@@ -11,7 +11,7 @@ export const authorizeUser = (request, response) => {
         response_type: 'code',
         client_id: CLIENT_ID,
         scope: scope,
-        redirect_uri: `${Config.baseUrl}${SpotifyRoute.Route}`,
+        redirect_uri: `http://localhost:3030`,
     }
 
     const queryParam = Object.entries(param)
@@ -21,7 +21,17 @@ export const authorizeUser = (request, response) => {
     const proxyMiddleware = createProxyMiddleware({
         target: `https://accounts.spotify.com/authorize?${queryParam}`,
         changeOrigin: true,
+        onProxyEnd: (proxy, req, res) => {
+            let main 
+            proxy.on("data", (data) => {
+                main += data.toString()
+            })
+
+            res.send(main)
+        }
       }
     )
+
+    console.log("tes")
     return proxyMiddleware
 }
