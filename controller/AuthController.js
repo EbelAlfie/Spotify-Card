@@ -1,6 +1,6 @@
-import { createProxyMiddleware } from "http-proxy-middleware"
+import { createProxyMiddleware, responseInterceptor } from "http-proxy-middleware"
 
-export const authorizeUser = (request, response) => {
+export const authorizeUser = () => {
     const CLIENT_ID = process.env.CLIENT_ID ?? ""
     const scope = `
     user-read-playback-state
@@ -11,27 +11,23 @@ export const authorizeUser = (request, response) => {
         response_type: 'code',
         client_id: CLIENT_ID,
         scope: scope,
-        redirect_uri: `http://localhost:3030`,
+        redirect_uri: "http://localhost:3030/last-track",
     }
+    
+    const queryParam = new URLSearchParams(param).toString()
 
-    const queryParam = Object.entries(param)
-        .map(item => `${item[0]}=${item[1]}`)
-        .join("&")
-
-    const proxyMiddleware = createProxyMiddleware({
+    return createProxyMiddleware({
         target: `https://accounts.spotify.com/authorize?${queryParam}`,
         changeOrigin: true,
-        onProxyEnd: (proxy, req, res) => {
-            let main 
-            proxy.on("data", (data) => {
-                main += data.toString()
-            })
-
-            res.send(main)
+        selfHandleResponse: true,
+        on: {
+            proxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
+                        
+                const response = responseBuffer.toString('utf8');
+                console.log(response)
+                return response.replaceAll('Example', 'Teapot');
+            }),
         }
       }
     )
-
-    console.log("tes")
-    return proxyMiddleware
 }

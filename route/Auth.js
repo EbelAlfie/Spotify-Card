@@ -1,6 +1,6 @@
 import { authorizeUser } from "../controller/AuthController.js";
 
 export const AuthRoute = {
-    Route: "/login",
+    Route: "/",
     Controller: authorizeUser
 }

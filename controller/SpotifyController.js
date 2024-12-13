@@ -33,7 +33,6 @@ const tokenHandler = async (response) => {
 }
 
 export const getSpotifyCard = async (request, response) => {
-    console.log(request)
     const tokens = await tokenHandler(response)
     if (!tokens) return 
 

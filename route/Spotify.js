@@ -1,6 +1,6 @@
 import { getSpotifyCard } from "../controller/SpotifyController.js";
 
 export const SpotifyRoute = {
-    Route: "/", 
+    Route: "/last-track", 
     Controller: getSpotifyCard
 }
