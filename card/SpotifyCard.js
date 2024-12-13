@@ -28,25 +28,30 @@ export const getSpotifyPlayerCard = (config) => {
     }
 
     const equalizerModifier = {
-        y: 80 * cardScale
+        y: 80 * cardScale,
+        height: 1 * cardScale,
+        width: 1 * cardScale
     }
 
     const title = {
         x : 80 * cardScale,
-        y : 15  * cardScale,
-        text : songTitle
+        y : 20  * cardScale,
+        text : songTitle,
+        fontSize: 20 ?? 20 * cardScale
     }
 
     const caption = {
         x : 80 * cardScale,
-        y : 25  * cardScale,
-        text : artists
+        y : title.y + title.fontSize,//25  * cardScale,
+        text : artists,
+        fontSize: 15 ?? 15 * cardScale
     }
 
     const stat = {
         x: 30,
         y: equalizerModifier.y,//cardModifier.height - 10,
-        text: isPlaying ? "Playing..." : "Not Playing"
+        text: isPlaying ? "Playing..." : "Not Playing",
+        fontSize: 10 ?? 10 * cardScale
     }
 
     const cardStyle = `
@@ -57,21 +62,22 @@ export const getSpotifyPlayerCard = (config) => {
 
             .song-title {
                 fill: #ffffff;
-                font-size: 20;
+                font-size: ${title.fontSize};
             }
 
             .song-artist {
                 fill: #b3b3b3;
-                font-size: 15;
+                font-size: ${caption.fontSize};
             }
 
             .track_status {
                 fill: #ffffff
-                font-size: 10;
+                font-size: ${stat.fontSize};
             }
 
             .equalizer {
-                height: 2px;
+                height: ${equalizerModifier.height}px;
+                width: ${equalizerModifier.width}px;
                 rx: 1;
                 fill: #1DB954;
                 transform-box: fill-box;
@@ -154,10 +160,10 @@ export const getSpotifyPlayerCard = (config) => {
             alt="Track Cover"
             clip-path="inset(0% round 15px)"
         />
-        <rect class="equalizer eq-fast" x="16" y="${equalizerModifier.y}" width="2"/>
-        <rect class="equalizer eq-medium" x="19" y="${equalizerModifier.y}" width="2"/>
-        <rect class="equalizer eq-quick" x="22" y="${equalizerModifier.y}" width="2"/>
-        <rect class="equalizer eq-slow" x="25" y="${equalizerModifier.y}" width="2"/>
+        <rect class="equalizer eq-fast" x="16" y="${equalizerModifier.y}"/>
+        <rect class="equalizer eq-medium" x="19" y="${equalizerModifier.y}"/>
+        <rect class="equalizer eq-quick" x="22" y="${equalizerModifier.y}"/>
+        <rect class="equalizer eq-slow" x="25" y="${equalizerModifier.y}"/>
         
         <text 
             class="track-status" 

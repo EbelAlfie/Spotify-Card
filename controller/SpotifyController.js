@@ -51,7 +51,7 @@ export const getSpotifyCard = async (request, response) => {
         return
     }
 
-    if (currentTrack instanceof Error && !spotifyError(currentTrack)) {
+    if (!currentTrack) {
         currentTrack = await trackUseCase.getLastPlayedTrack() 
         if (currentTrack instanceof Error) {
             response.status(500)

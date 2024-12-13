@@ -11,7 +11,8 @@ export class TrackUseCase {
             
             const track = response.data.item
             const data = response.data
-            console.log(data)
+
+            if (!data) return data
 
             const album = track.album
 
@@ -48,9 +49,8 @@ export class TrackUseCase {
 
     async getLastPlayedTrack() {
         return this.repository.getLastPlayedTrack()
-        .then(response => {
-            
-            const track = response.data.items[0]
+        .then(response => {            
+            const track = response.data.items[0]?.track
 
             const album = track.album
 

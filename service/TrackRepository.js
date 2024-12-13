@@ -22,7 +22,7 @@ export class TrackRepository {
         return axiosRetry.request(config)
     }
 
-    async getRecentlyPlayed() {
+    async getLastPlayedTrack() {
         let config = {
             method: "GET",
             maxBodyLength: Infinity,
