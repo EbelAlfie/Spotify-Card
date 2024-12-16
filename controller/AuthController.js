@@ -1,3 +1,4 @@
+import axios from "axios"
 import { createProxyMiddleware, responseInterceptor } from "http-proxy-middleware"
 
 export const authorizeUser = () => {
@@ -19,10 +20,10 @@ export const authorizeUser = () => {
     return createProxyMiddleware({
         target: `https://accounts.spotify.com/authorize?${queryParam}`,
         changeOrigin: true,
-        selfHandleResponse: true,
+        // selfHandleResponse: true,
         on: {
             proxyRes: responseInterceptor(async (responseBuffer, proxyRes, req, res) => {
-                        
+
                 const response = responseBuffer.toString('utf8');
                 console.log(response)
                 return response.replaceAll('Example', 'Teapot');

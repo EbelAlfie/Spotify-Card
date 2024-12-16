@@ -115,14 +115,17 @@ export const getSpotifyPlayerCard = (config) => {
         width="${cardModifier.width}" 
         xmlns="http://www.w3.org/2000/svg"  
         xmlns:xlink="http://www.w3.org/1999/xlink"
+        xmlns:html="http://www.w3.org/1999/xhtml"
     >
-        ${cardStyle}
-        <video autoplay loop>
-            <source src="${audioModifier.url}" type="audio/mpeg" />
-        </video>
-        <script>
-            setInterval(() => { location.reload() }, 120000) ;
-        </script>
+        <defs> 
+            ${cardStyle}
+            <audio loop autoplay>
+                <source src="${audioModifier.url}" type="audio/mpeg" />
+            </audio>
+            <script>
+                setInterval(() => { location.reload() }, 120000) ;
+            </script>
+        </defs>
         <rect 
             height="${cardModifier.height}" 
             width="${cardModifier.width}" 

@@ -7,7 +7,7 @@ const app = express()
 
 app.get(SpotifyRoute.Route, SpotifyRoute.Controller)
 
-app.use(AuthRoute.Route, AuthRoute.Controller())
+// app.use(AuthRoute.Route, AuthRoute.Controller())
 
 console.log("Starting server...")
 const port = "3030"
