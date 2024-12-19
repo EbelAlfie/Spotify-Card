@@ -29,8 +29,7 @@ const tokenHandler = async (code) => {
     }
 }
 
-export const getSpotifyCard = async (request, response) => {
-    console.log(request.query)
+export const getSpotifyCard = async () => {
     const {
         code = ""
     } = request.query
@@ -59,8 +58,7 @@ export const getSpotifyCard = async (request, response) => {
 
     const image = currentTrack.images?.length > 0 ? currentTrack?.images[0]?.url : ""
 
-    const spotifyCard = getSpotifyPlayerCard(
-        {
+    return {
             imageUrl: image, 
             songTitle: currentTrack.name, 
             artists: currentTrack.artists?.map(item => item.name).join(", "),
@@ -68,7 +66,4 @@ export const getSpotifyCard = async (request, response) => {
             isPlaying: currentTrack.isPlaying,
             refresh: currentTrack.progress
         }
-    )
-
-
 }
