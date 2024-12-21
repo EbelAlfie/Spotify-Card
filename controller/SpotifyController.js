@@ -5,7 +5,7 @@ import { TrackUseCase } from "../domain/TrackUseCase.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
 
-const tokenHandler = async (response) => {
+const tokenHandler = async (debug, response) => {
     const tokenRepository = new TokenRepository()
     const tokenUseCase = new TokenUseCase(tokenRepository)
 
@@ -13,7 +13,8 @@ const tokenHandler = async (response) => {
 
     if (tokenObj instanceof Error) {
         response.status(500)
-        response.send(getErrorCard(tokenObj.message))
+        const error = tokenObj.message
+        response.send(debug ? error : getErrorCard(error))
         return 
     }
 
@@ -22,7 +23,8 @@ const tokenHandler = async (response) => {
     })
     if (clientToken instanceof Error) {
         response.status(500)
-        response.send(getErrorCard(clientToken.message))
+        const error = clientToken.message
+        response.send(debug ? error : getErrorCard(error))
         return 
     }
     
@@ -33,7 +35,12 @@ const tokenHandler = async (response) => {
 }
 
 export const getSpotifyCard = async (request, response) => {
-    const tokens = await tokenHandler(response)
+    console.log(request.query)
+    const {
+        debug = false
+    } = request.query
+
+    const tokens = await tokenHandler(debug, response)
     if (!tokens) return 
 
     const trackRepository = new TrackRepository(tokens)
@@ -42,7 +49,8 @@ export const getSpotifyCard = async (request, response) => {
     const currentTrack = await trackUseCase.getLastDeviceState()
     if (currentTrack instanceof Error) {
         response.status(500)
-        response.send(getErrorCard(currentTrack.message))
+        const error = currentTrack.message
+        response.send(debug ? error : getErrorCard(error))
         return
     }
 
@@ -52,22 +60,22 @@ export const getSpotifyCard = async (request, response) => {
 
     if (trackResult instanceof Error) {
         response.status(500)
-        response.send(getErrorCard(trackResult.message))
+        const error = trackResult.message
+        response.send(debug ? error : getErrorCard(error))
         return
     }
 
     const image = trackResult.images?.length > 0 ? trackResult?.images[0]?.url : ""
 
-    const spotifyCard = getSpotifyPlayerCard(
-        {
+    const responseResult = {
             imageUrl: image, 
             songTitle: trackResult.name, 
             artists: trackResult.artists?.map(item => item.name).join(", "),
             audioUrl: trackResult.previewUrl,
             isPlaying: currentTrack.isPlaying
         }
-    )
+    const spotifyCard = getSpotifyPlayerCard(responseResult)
 
     response.status(200)
-    response.send(spotifyCard)
+    response.send(debug ? responseResult : spotifyCard)
 }
