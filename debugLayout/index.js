@@ -9,7 +9,7 @@ async function main() {
             artists = "", 
             audioUrl = "", 
             isPlaying = false
-        } = await axios.get("http://localhost:3030")
+        } = await axios.get("http://localhost:3030/last-track?debug=true")
     
         title.innerHtml = songTitle
         artist.innerHtml = artists

@@ -16,11 +16,6 @@ export class AxiosRetry {
         });
 
         return axios.request(req)
-        // .catch(error => {
-        //     if (retryCount - 1 >= 0) this.#handleRetry(req, retryCount - 1)
-
-        //     // Promise.reject(error)
-        // })
     }
 
     async #handleRetry(req, retryCount) {

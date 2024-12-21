@@ -6,9 +6,9 @@ import { createProxyMiddleware } from "http-proxy-middleware"
 
 const app = express()
 
-app.get(SpotifyRoute.Route, SpotifyRoute.Controller)
+app.use(cors())
 
-app.use(cors)
+app.get(SpotifyRoute.Route, SpotifyRoute.Controller)
 
 // app.use(AuthRoute.Route, AuthRoute.Controller())
 

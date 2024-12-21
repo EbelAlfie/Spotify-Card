@@ -38,8 +38,8 @@ export const getSpotifyCard = async (request, response) => {
     console.log(request.query)
     const {
         debug = false
-    } = request.query
-
+    } = request.query 
+    
     const tokens = await tokenHandler(debug, response)
     if (!tokens) return 
 
