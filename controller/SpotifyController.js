@@ -1,7 +1,9 @@
 import { getErrorCard } from "../card/ErrorCard.js"
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
+import { AudioUseCase } from "../domain/AudioUseCase.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
 import { TrackUseCase } from "../domain/TrackUseCase.js"
+import { AudioRepository } from "../service/AudioRepository.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
 
@@ -42,6 +44,11 @@ export const getSpotifyCard = async (request, response) => {
     
     const tokens = await tokenHandler(debug, response)
     if (!tokens) return 
+
+    const audioRepository = new AudioRepository(tokens)
+    const audioUseCase = new AudioUseCase(audioRepository)
+
+    audioUseCase.openWebSocketConnection()
 
     const trackRepository = new TrackRepository(tokens)
     const trackUseCase = new TrackUseCase(trackRepository)
