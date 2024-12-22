@@ -65,7 +65,7 @@ export const getSpotifyPlayerCard = (config) => {
             }
 
             .track_status {
-                fill: #ffffff
+                fill: #ffffff;
                 font-size: 10;
             }
 

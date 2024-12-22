@@ -8,101 +8,117 @@
 
     <body>
         <svg 
-            height="100" 
-            width="300" 
+            id="card-container"
+            height="200" 
+            width="600" 
             xmlns="http://www.w3.org/2000/svg"  
             xmlns:xlink="http://www.w3.org/1999/xlink"
+            xmlns:html="http://www.w3.org/1999/xhtml"
         >
-            <defs>
+            <defs> 
                 <style>
                     .album-image {
                         border-radius: 4px;
                     }
-            
+        
                     .song-title {
                         fill: #ffffff;
+                        font-size: 20;
                     }
-            
+        
                     .song-artist {
                         fill: #b3b3b3;
+                        font-size: 15;
                     }
-
+        
                     .track_status {
-                        fill: #ffffff
+                        fill: #ffffff;
+                        font-size: 10;
                     }
-            
+        
                     .equalizer {
-                        height: 2px;
-                        rx: 1;
+                        height: 4px;
+                        rx: 2;
                         fill: #1DB954;
                         transform-box: fill-box;
                         transform: rotate(180deg) ;
                         animation-iteration-count: infinite;
                         animation-name: equalizer-anim;
                     }
-            
+        
                     .eq-slow {
                         animation-duration: 1.2s;
                     }
-            
+        
                     .eq-medium {
                         animation-duration: 1.0s;
                     }
-            
+        
                     .eq-quick {
                         animation-duration: 0.8s;
                     }
-            
+        
                     .eq-fast {
                         animation-duration: 0.6s;
                     }
-            
+        
                     @keyframes equalizer-anim {
-                    0%, 100% {
-                        height: 2px;
-                    }
-                    50% {
-                        height: 8px;
-                    }
-                    60% {
-                        height: 11px;
-                    }
+                        0%, 100% {
+                            height: 4px;
+                        }
+                        50% {
+                            height: 16px;
+                        }
+                        60% {
+                            height: 22px;
+                        }
                     }
                 </style>
-                <audio xmlns="http://www.w3.org/1999/xhtml" autoplay>
-                    <source src="https://p.scdn.co/mp3-preview/f43eed9c4ac6f386720c8e5adc5033e2c2b0edd6?cid=d8a5ed958d274c2e8ee717e6a4b0971d" type="audio/mpeg" />
-                </audio>
                 <script>
-                    setInterval(() => { location.reload() }, 60000) ;
+                    setInterval(() => { location.reload() }, 120000) ;
                 </script>
             </defs>
-
             <rect 
-                height="100" 
-                width="300" 
+                id="card-container"
+                height="200" 
+                width="600" 
                 x="0" 
                 y="0"
-                rx="4"
-                ry="4"
+                rx="8"
+                ry="8"
             />
-            <text class="song-title" fill="white" x="80" y="25"></text>
-            <text class="song-artist" fill="white" x="80" y="50"></text>
+            <text 
+                class="song-title" id="song-title" 
+                fill="white" x="160" y="30"
+            >
+            </text>
+            <text 
+                class="song-artist" id="song-artist"
+                fill="white" x="160" y="50"
+            >
+            </text>
             <image 
-                class="album-image" 
-                height="64" 
-                width="64" 
-                x="10"
-                y="10"
-                href="https://i.scdn.co/image/ab67616d0000b273e9a472235e7fe8d199f2d3c3"
+                class="album-image" id="album-image"
+                height="128" 
+                width="128" 
+                x="20" 
+                y="20" 
+                href="" 
                 alt="Track Cover"
                 clip-path="inset(0% round 15px)"
             />
-            <rect class="equalizer eq-fast" x="16" y="90" width="2"/>
-            <rect class="equalizer eq-medium" x="19" y="90" width="2"/>
-            <rect class="equalizer eq-quick" x="22" y="90" width="2"/>
-            <rect class="equalizer eq-slow" x="25" y="90" width="2"/>
-
-            <text class="track-status" fill="white" x="30" y="90">Is Playing</text>
+            <rect id="equalizer" class="equalizer eq-fast" x="32" y="160" width="4"/>
+            <rect id="equalizer" class="equalizer eq-medium" x="38" y="160" width="4"/>
+            <rect id="equalizer" class="equalizer eq-quick" x="44" y="160" width="4"/>
+            <rect id="equalizer" class="equalizer eq-slow" x="50" y="160" width="4"/>
+            
+            <text 
+                class="track-status" id="track-status" 
+                fill="white" 
+                x="60" 
+                y="160"
+            >
+            </text>
         </svg>
     </body>
 </html>
