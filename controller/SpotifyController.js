@@ -37,7 +37,6 @@ const tokenHandler = async (debug, response) => {
 }
 
 export const getSpotifyCard = async (request, response) => {
-    console.log(request.query)
     const {
         debug = false
     } = request.query 
