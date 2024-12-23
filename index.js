@@ -15,4 +15,4 @@ app.get(AuthRoute.Route, AuthRoute.Controller)
 
 console.log("Starting server...")
 
-ServerlessHttp(app)
+export const handler = ServerlessHttp(app)
