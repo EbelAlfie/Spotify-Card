@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "deploy": "node --env-file=.env index.js"
+    "deploy": "node --env-file=.env index.js",
+    "netlify": "node index.js"
   },
   "type": "module",
   "author": "",
