@@ -1,6 +1,6 @@
 import express from "express"
 import { AuthRoute, SpotifyRoute } from "./route/Spotify.js"
-import ServerlessHttp from "serverless-http"
+import serverless from "serverless-http"
 
 export const Config = {
     port: "3030",
@@ -15,4 +15,6 @@ app.get(AuthRoute.Route, AuthRoute.Controller)
 
 console.log("Starting server...")
 
-export const handler = ServerlessHttp(app)
+serverless(app)
+
+app.listen(Config.port, () => { console.log(`Listening to ${Config.port}`) })
