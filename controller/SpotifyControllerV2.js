@@ -1,7 +1,8 @@
 import { getErrorCard } from "../card/ErrorCard"
-import { SocketUseCase } from "../domain/SocketUseCase"
+import { SocketUseCase } from "../domain/AudioUseCase"
+import { SocketService } from "../domain/SocketService"
 import { TokenUseCase } from "../domain/TokenUseCase"
-import { SocketRepository } from "../service/SocketRepository"
+import { SocketRepository } from "../service/AudioRepository"
 import { TokenRepository } from "../service/TokenRepository"
 
 async function GetSpotifyCard(request, response) {
@@ -17,10 +18,23 @@ async function GetSpotifyCard(request, response) {
         return 
     }
 
-    const socketRepository = new SocketRepository({
+    const clientToken = await tokenUseCase.fetchClientToken({
+        clientId: accessToken?.clientId
+    })
+    
+    if (clientToken instanceof Error) {
+        response.status(500)
+        const error = clientToken.message
+        response.send(debug ? error : getErrorCard(error))
+        return 
+    }
+
+    const onConnectionCreated = (message) => {
+        
+    }
+
+    const socketService = new SocketService({
         accessToken: accessToken.accessToken
     })
-    const socketUseCase = new SocketUseCase(socketRepository)
-
-    socketUseCase.openWebSocketConnection()
+    socketService.authenticateWebSocket()
 }
