@@ -17,4 +17,4 @@ console.log("Starting server...")
 
 serverless(app)
 
-app.listen(Config.port, () => { console.log(`Listening to ${Config.port}`) })
+// app.listen(Config.port, () => { console.log(`Listening to ${Config.port}`) })
