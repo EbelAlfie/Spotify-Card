@@ -1,4 +1,4 @@
-export class AudioRepository {
+export class SocketRepository {
     constructor(config) {
         const {
             clientToken = "", 
@@ -11,6 +11,7 @@ export class AudioRepository {
 
     async authenticateWebSocket() {
         const socketUrl = `wss://gew4-dealer.spotify.com/?access_token=${this.accessToken}`
+        
         this.socket = new WebSocket(socketUrl)
 
         this.socket.onopen = (event) => {

@@ -1,4 +1,4 @@
-export class AudioUseCase {
+export class SocketUseCase {
     constructor(audioRepository) {
         if (!audioRepository) 
             throw Error("No repository provided")

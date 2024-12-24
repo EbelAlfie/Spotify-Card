@@ -29,7 +29,7 @@ export class TrackRepository {
         });
         
         let config = {
-            method: 'put',
+            method: 'PUT',
             maxBodyLength: Infinity,
             url: 'https://gew4-spclient.spotify.com/connect-state/v1/devices/hobs_86133792d6f7240c655de45fa6bc7f30527',
             headers: { 

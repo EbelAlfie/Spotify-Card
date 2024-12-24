@@ -14,7 +14,7 @@ export class AxiosRetry {
             return response;
         }, (error) => {
             if (this.retryCount > 0) {
-                this.retryCount += 1
+                this.retryCount -= 1
                 return axios.request(error.config);
             } else 
                 return Promise.reject(error);
