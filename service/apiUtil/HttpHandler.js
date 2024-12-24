@@ -4,22 +4,22 @@ class HttpHandler {
     MAX_RETRY = 5
     retryCount = this.MAX_RETRY
 
-    injectedHeader = {}
+    authHeader = {}
 
     setMaxRetry(retry) {
         this.MAX_RETRY = retry
     }
 
     setAccessToken(accessToken) {
-        Object.assign(this.injectedHeader, {
-            'authorization': `Bearer ${accessToken}`
-        })
+        this.authHeader['authorization'] = `Bearer ${accessToken}`
     }
 
     setClientToken(clientToken) {
-        Object.assign(this.injectedHeader, {
-            'client-token': clientToken, 
-        })
+        this.authHeader['client-token'] = clientToken
+    }
+
+    build() {
+        return this
     }
 
     async request(req) {
@@ -38,7 +38,7 @@ class HttpHandler {
     }
 
     _setHeaders() {
-        
+
     }
 }
 

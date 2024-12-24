@@ -21,7 +21,7 @@ async function GetSpotifyCard(request, response) {
     const clientToken = await tokenUseCase.fetchClientToken({
         clientId: accessToken?.clientId
     })
-    
+
     if (clientToken instanceof Error) {
         response.status(500)
         const error = clientToken.message
@@ -29,7 +29,7 @@ async function GetSpotifyCard(request, response) {
         return 
     }
 
-    const onConnectionCreated = (message) => {
+    const onConnectionCreated = (connectionId) => {
         
     }
 
