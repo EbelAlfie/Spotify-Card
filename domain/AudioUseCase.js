@@ -11,4 +11,10 @@ export class AudioUseCase {
 
         })
     }
+
+    transferDeviceRequest(deviceId) {
+        const old = "g"
+        const url = `https://gew4-spclient.spotify.com/connect-state/v1/connect/transfer/from/${old}/to/${deviceId}` 
+        const method = "POST"
+    }
 }
