@@ -1,6 +1,13 @@
 export const generateRandomDeviceId = (num = 40) => {
-    const e = Math.ceil(num / 2);
-    return crypto.getRandomValues(new Uint8Array(e))
+    const param = Math.ceil(num / 2);
+    const rands = crypto.getRandomValues(new Uint8Array(param))
+    let deviceId = "";
+    for (let i = 0; i < rands.length; i++) {
+        const o = rands[i];
+        o < 16 && (deviceId += "0"),
+        deviceId += o.toString(16)
+    }
+    return deviceId
 }
 
 export const generateDeviceIdObserver = (deviceId) => {

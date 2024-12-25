@@ -9,7 +9,14 @@ export class DeviceUseCase {
 
     async registerDevice() {
         return this.repository.registerDevice()
-            .catch(error => error)
+            .then(response => {
+                const data = response.data
+                console.log(data)
+                return response
+            })
+            .catch(error => {
+                return error
+            })
     }
 
     async connectDevice() {
@@ -37,6 +44,14 @@ export class DeviceUseCase {
 
     async activateDevice() {
         return this.repository.activateDevice()
-            .catch(error => error)
+            .then(response => {
+                const data = response.data
+                console.log(data)
+                return response
+            })
+            .catch(error => {
+                console.log(error)
+                return error
+            })
     }
 }

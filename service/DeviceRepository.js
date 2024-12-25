@@ -110,17 +110,26 @@ export class DeviceRepository {
     const url = 
       `https://gew4-spclient.spotify.com/connect-state/v1/connect/transfer/from/${this.deviceId}/to/${this.deviceId}`
 
+    const data = JSON.stringify(
+      {
+        "transfer_options":{
+          "restore_paused":"restore"
+        },
+        "interaction_id":"1253b28d-ee67-4df5-90d6-4ec92bca20a5",
+        "command_id":"99b5c6cd06f58296d9835980a95afc7f"
+      }
+    )
+
     const config = {
         method: "POST",
         url: url,
         headers: {},
-        data: {}
+        data: data
     }
 
     return httpHandler
         .init(config)
         .withAuthHeader()
-        .withConnectionId()
         .request()
   }
 }

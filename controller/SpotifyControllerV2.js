@@ -60,7 +60,7 @@ export async function getSpotifyCard(request, response) {
             return 
         }
 
-        deviceUseCase.activateDevice()
+        await deviceUseCase.activateDevice()
 
         const track = await trackUseCase.getTrackById({
             trackId: deviceState.trackUri
