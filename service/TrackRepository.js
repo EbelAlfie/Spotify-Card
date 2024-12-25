@@ -4,8 +4,9 @@ export class TrackRepository {
 
     async getTrackById(trackId) {
         let config = {
-            method: 'get',
+            method: 'GET',
             maxBodyLength: Infinity,
+            // headers: {},
             url: `https://api.spotify.com/v1/tracks?ids=${trackId}&market=from_token`
         };
 

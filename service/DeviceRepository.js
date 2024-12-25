@@ -9,9 +9,7 @@ export class DeviceRepository {
   }
 
   async registerDevice() {
-    const deviceIdObserver = generateDeviceIdObserver(deviceId)  
-    const url =
-      `https://gew4-spclient.spotify.com/track-playback/v1/devices/${deviceIdObserver}`
+    const url = `https://gew4-spclient.spotify.com/track-playback/v1/devices`
     
     let data = JSON.stringify({
       "device": {
@@ -35,7 +33,7 @@ export class DeviceRepository {
             "manifest_urls_audio_ad"
           ]
         },
-        "device_id": `${deviceId}`,
+        "device_id": `${this.deviceId}`,
         "device_type": "computer",
         "metadata": {},
         "model": "web_player",
@@ -44,29 +42,28 @@ export class DeviceRepository {
         "is_group": false
       },
       "outro_endcontent_snooping": false,
-      "connection_id": `${connectionId}`,
+      "connection_id": `${httpHandler.connectionIdHeader}`,
       "client_version": "harmony:4.45.0-2fc85eb5",
       "volume": 65535
     });
 
     let config = {
-      method: 'post',
+      method: 'POST',
       maxBodyLength: Infinity,
-      url: 'https://gew4-spclient.spotify.com/track-playback/v1/devices',
-      headers: { 
-          
-      },
+      url: url,
+      headers: {},
       data : data
     };
     
     return httpHandler
-      .init()
+      .init(config)
       .withAuthHeader()
-      .withConnectionId()
       .request()
   }
 
   async connectDevice() {
+    const deviceIdObserver = generateDeviceIdObserver(this.deviceId)  
+
     let data = JSON.stringify({
         "member_type": "CONNECT_STATE",
         "device": {
@@ -83,7 +80,7 @@ export class DeviceRepository {
     let config = {
         method: 'PUT',
         maxBodyLength: Infinity,
-        url: 'https://gew4-spclient.spotify.com/connect-state/v1/devices/hobs_86133792d6f7240c655de45fa6bc7f30527',
+        url: `https://gew4-spclient.spotify.com/connect-state/v1/devices/${deviceIdObserver}`,
         headers: { 
             'accept': 'application/json', 
             'accept-language': 'en-US,en;q=0.9,id;q=0.8',
@@ -103,16 +100,27 @@ export class DeviceRepository {
     };
     
     return httpHandler
-      .create(config)
+      .init(config)
       .withAuthHeader()
       .withConnectionId()
       .request()
   }
 
   async transferDevice() {
+    const url = 
+      `https://gew4-spclient.spotify.com/connect-state/v1/connect/transfer/from/${this.deviceId}/to/${this.deviceId}`
+
+    const config = {
+        method: "POST",
+        url: url,
+        headers: {},
+        data: {}
+    }
 
     return httpHandler
-      .init()
-      .request()
+        .init(config)
+        .withAuthHeader()
+        .withConnectionId()
+        .request()
   }
 }

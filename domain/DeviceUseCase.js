@@ -1,9 +1,15 @@
+
 export class DeviceUseCase {
     constructor(repository) {
         if (!repository) 
             throw Error("No repository provided")
 
         this.repository = repository
+    }
+
+    async registerDevice() {
+        return this.repository.registerDevice()
+            .catch(error => error)
     }
 
     async connectDevice() {
@@ -27,5 +33,9 @@ export class DeviceUseCase {
             console.log(error)
             return error
         })
+    }
+
+    async activateDevice() {
+        return this.repository.activateDevice()
     }
 }

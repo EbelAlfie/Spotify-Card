@@ -28,13 +28,19 @@ export class SocketService {
             console.log(`close ${event}`)
         }
 
-        this.socket.onmessage = this._parseMessage
+        this.socket.onmessage = this._handleMessage.bind(this)
 
         return this.socket
     }
 
     _handleMessage(message) {
-        
+        const data = this._parseMessage(message)
+        if (data.type !== "message") return 
+
+        const connectionId = data.headers["Spotify-Connection-Id"]
+        if (connectionId !== undefined)
+            this.onConnectionCreated(connectionId)
+
     }
 
     _parseMessage(message) {
@@ -47,21 +53,15 @@ export class SocketService {
             console.log(error)
             return
         }
+        return data
     }
 
-    onConnectionCreated(connectionId) {
-        const type = {
-            headers: {
-              'Spotify-Connection-Id': '=='
-            },
-            method: 'PUT',
-            type: 'message',
-            uri: 'hm://pusher/v1/connections/'
-        }   
+    async onConnectionCreated(connectionId) {
+        console.log("TESTBB")
     }
 
-    onStateChanged(newState) {
-
+    async onPlayerStateChanged(newState) {
+        
     }
 
 }

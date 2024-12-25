@@ -1,4 +1,5 @@
 import { getErrorCard } from "../card/ErrorCard.js"
+import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
 import { DeviceUseCase } from "../domain/DeviceUseCase.js"
 import { SocketService } from "../domain/SocketService.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
@@ -9,6 +10,10 @@ import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
 
 export async function getSpotifyCard(request, response) {
+    const {
+        debug = false
+    } = request.query 
+
     const tokenRepository = new TokenRepository()
     const tokenUseCase = new TokenUseCase(tokenRepository)
 
@@ -55,9 +60,10 @@ export async function getSpotifyCard(request, response) {
             return 
         }
 
+        deviceUseCase.activateDevice()
 
         const track = await trackUseCase.getTrackById({
-            trackId: currentTrack.trackUri
+            trackId: deviceState.trackUri
         })
     
         if (track instanceof Error) {
@@ -82,12 +88,15 @@ export async function getSpotifyCard(request, response) {
         response.send(debug ? responseResult : spotifyCard)
     }
 
-    const onCommandReceived = (command) => {
+    const onPlayerStateChanged = (command) => {
 
     }
 
     const socketService = new SocketService({
         accessToken: accessToken.accessToken
     })
+    socketService.onConnectionCreated = onConnectionCreated
+    socketService.onPlayerStateChanged = onPlayerStateChanged
+
     socketService.authenticateWebSocket()
 }
