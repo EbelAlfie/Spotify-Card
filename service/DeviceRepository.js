@@ -106,7 +106,7 @@ export class DeviceRepository {
       .request()
   }
 
-  async transferDevice() {
+  async activateDevice() {
     const url = 
       `https://gew4-spclient.spotify.com/connect-state/v1/connect/transfer/from/${this.deviceId}/to/${this.deviceId}`
 

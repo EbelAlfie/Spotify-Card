@@ -73,14 +73,14 @@ export async function getSpotifyCard(request, response) {
             return
         }
     
-        const image = trackResult.images?.length > 0 ? trackResult?.images[0]?.url : ""
+        const image = track.images?.length > 0 ? track?.images[0]?.url : ""
     
         const responseResult = {
                 imageUrl: image, 
-                songTitle: trackResult.name, 
-                artists: trackResult.artists?.map(item => item.name).join(", "),
-                audioUrl: trackResult.previewUrl,
-                isPlaying: currentTrack.isPlaying
+                songTitle: track.name, 
+                artists: track.artists?.map(item => item.name).join(", "),
+                audioUrl: track.previewUrl,
+                isPlaying: deviceState.isPlaying
             }
         const spotifyCard = getSpotifyPlayerCard(responseResult)
     

@@ -6,7 +6,7 @@ export class TrackRepository {
         let config = {
             method: 'GET',
             maxBodyLength: Infinity,
-            // headers: {},
+            headers: {},
             url: `https://api.spotify.com/v1/tracks?ids=${trackId}&market=from_token`
         };
 

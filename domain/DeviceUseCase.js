@@ -37,5 +37,6 @@ export class DeviceUseCase {
 
     async activateDevice() {
         return this.repository.activateDevice()
+            .catch(error => error)
     }
 }
