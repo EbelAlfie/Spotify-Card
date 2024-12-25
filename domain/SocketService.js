@@ -28,12 +28,16 @@ export class SocketService {
             console.log(`close ${event}`)
         }
 
-        this.socket.onmessage = this._handleMessage
+        this.socket.onmessage = this._parseMessage
 
         return this.socket
     }
 
     _handleMessage(message) {
+        
+    }
+
+    _parseMessage(message) {
         const payload = message.data
         let data
         try {
@@ -46,7 +50,14 @@ export class SocketService {
     }
 
     onConnectionCreated(connectionId) {
-        
+        const type = {
+            headers: {
+              'Spotify-Connection-Id': '=='
+            },
+            method: 'PUT',
+            type: 'message',
+            uri: 'hm://pusher/v1/connections/'
+        }   
     }
 
     onStateChanged(newState) {

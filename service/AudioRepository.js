@@ -1,4 +1,4 @@
-import { HttpHandler } from "./AxiosRetry";
+import { httpHandler } from "./apiUtil/HttpHandler.js";
 
 export class AudioRepository {
     constructor(config) {
@@ -18,7 +18,9 @@ export class AudioRepository {
         
         const config = {}
 
-        return HttpHandler.request(config)
+        return httpHandler
+            .init(config)
+            .request()
     }
 
     getJsonManifest(fileId) {

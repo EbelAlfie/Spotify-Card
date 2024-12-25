@@ -1,11 +1,14 @@
-import { getErrorCard } from "../card/ErrorCard"
-import { SocketUseCase } from "../domain/AudioUseCase"
-import { SocketService } from "../domain/SocketService"
-import { TokenUseCase } from "../domain/TokenUseCase"
-import { SocketRepository } from "../service/AudioRepository"
-import { TokenRepository } from "../service/TokenRepository"
+import { getErrorCard } from "../card/ErrorCard.js"
+import { DeviceUseCase } from "../domain/DeviceUseCase.js"
+import { SocketService } from "../domain/SocketService.js"
+import { TokenUseCase } from "../domain/TokenUseCase.js"
+import { TrackUseCase } from "../domain/TrackUseCase.js"
+import { httpHandler } from "../service/apiUtil/HttpHandler.js"
+import { DeviceRepository } from "../service/DeviceRepository.js"
+import { TokenRepository } from "../service/TokenRepository.js"
+import { TrackRepository } from "../service/TrackRepository.js"
 
-async function GetSpotifyCard(request, response) {
+export async function getSpotifyCard(request, response) {
     const tokenRepository = new TokenRepository()
     const tokenUseCase = new TokenUseCase(tokenRepository)
 
@@ -21,7 +24,7 @@ async function GetSpotifyCard(request, response) {
     const clientToken = await tokenUseCase.fetchClientToken({
         clientId: accessToken?.clientId
     })
-    
+
     if (clientToken instanceof Error) {
         response.status(500)
         const error = clientToken.message
@@ -29,8 +32,58 @@ async function GetSpotifyCard(request, response) {
         return 
     }
 
-    const onConnectionCreated = (message) => {
+    httpHandler.setAccessToken(accessToken)
+    httpHandler.setClientToken(clientToken)
+
+    const deviceRepository = new DeviceRepository()
+    const deviceUseCase = new DeviceUseCase(deviceRepository)
+
+    const trackRepository = new TrackRepository()
+    const trackUseCase = new TrackUseCase(trackRepository)
+
+    const onConnectionCreated = async (connectionId) => {
+        httpHandler.setConnectionId(connectionId)
         
+        await deviceUseCase.registerDevice()
+
+        const deviceState = await deviceUseCase.connectDevice()
+
+        if (deviceState instanceof Error) {
+            response.status(500)
+            const error = deviceState.message
+            response.send(debug ? error : getErrorCard(error))
+            return 
+        }
+
+
+        const track = await trackUseCase.getTrackById({
+            trackId: currentTrack.trackUri
+        })
+    
+        if (track instanceof Error) {
+            response.status(500)
+            const error = track.message
+            response.send(debug ? error : getErrorCard(error))
+            return
+        }
+    
+        const image = trackResult.images?.length > 0 ? trackResult?.images[0]?.url : ""
+    
+        const responseResult = {
+                imageUrl: image, 
+                songTitle: trackResult.name, 
+                artists: trackResult.artists?.map(item => item.name).join(", "),
+                audioUrl: trackResult.previewUrl,
+                isPlaying: currentTrack.isPlaying
+            }
+        const spotifyCard = getSpotifyPlayerCard(responseResult)
+    
+        response.status(200)
+        response.send(debug ? responseResult : spotifyCard)
+    }
+
+    const onCommandReceived = (command) => {
+
     }
 
     const socketService = new SocketService({

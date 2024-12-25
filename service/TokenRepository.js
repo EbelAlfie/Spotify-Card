@@ -1,8 +1,6 @@
-import { AxiosRetry } from "./AxiosRetry.js";
+import { httpHandler } from "./apiUtil/HttpHandler.js";
 
 export class TokenRepository {
-    axiosRetry = new AxiosRetry()
-
     constructor() {
         this.me = process.env.ME
     }
@@ -13,7 +11,7 @@ export class TokenRepository {
         } = request
 
         let config = {
-            method: 'post',
+            method: 'POST',
             url: "https://clienttoken.spotify.com/v1/clienttoken",
             headers: { 
                 "content-type": "application/json",
@@ -35,10 +33,9 @@ export class TokenRepository {
             }
         };
 
-        return this.axiosRetry.request(config)
-        .then(token => {
-            return token
-        })
+        return httpHandler
+            .init(config)
+            .request()
     }
 
     async fetchAccessToken() {
@@ -50,9 +47,8 @@ export class TokenRepository {
             url: "https://open.spotify.com/get_access_token?reason=transport&productType=web-player"
         }
 
-        return this.axiosRetry.request(config)
-        .then(result => {
-            return result
-        })
+        return httpHandler
+            .init(config)
+            .request()
     }
 }
