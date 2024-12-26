@@ -35,7 +35,7 @@ export class DeviceRepository {
           ]
         },
         "device_id": `${this.deviceId}`,
-        "device_type": "computer",
+        "device_type": "game_console",
         "metadata": {},
         "model": "web_player",
         "name": "Air Conditioner",
@@ -43,7 +43,7 @@ export class DeviceRepository {
         "is_group": false
       },
       "outro_endcontent_snooping": false,
-      "connection_id": `${httpHandler.connectionIdHeader}`,
+      "connection_id": `${httpHandler.getConnectionIdHeader()}`,
       "client_version": "harmony:4.45.0-2fc85eb5",
       "volume": 65535
     });
@@ -120,8 +120,8 @@ export class DeviceRepository {
       method: 'POST',
       maxBodyLength: Infinity,
       url: `https://gew4-spclient.spotify.com/connect-state/v1/connect/transfer/from/${this.deviceId}/to/${this.deviceId}`,
-      headers: { 
-        'Content-Type': 'application/json'
+      headers: {
+        'content-type': 'application/json'
       },
       data : data
     };

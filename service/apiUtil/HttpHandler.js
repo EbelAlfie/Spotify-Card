@@ -24,6 +24,10 @@ class HttpHandler {
         this.connectionIdHeader['x-spotify-connection-id'] = spotConnectionId
     }
 
+    getConnectionIdHeader() {
+        return this.connectionIdHeader['x-spotify-connection-id'] ?? ""
+    }
+
     init(config) {
         this.config = config ?? {
             method: 'GET',
