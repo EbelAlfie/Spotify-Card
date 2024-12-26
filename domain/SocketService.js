@@ -4,7 +4,6 @@ export class SocketService {
             accessToken = ""
         } = config
 
-        console.log(accessToken)
         this.accessToken = accessToken ?? ""
     }
 
@@ -21,7 +20,6 @@ export class SocketService {
             console.log(`error ${error}`)
             console.log(error.error)
             console.log(error.message)
-            
         }
 
         this.socket.onclose = (event) => {
@@ -43,6 +41,15 @@ export class SocketService {
 
     }
 
+    async onConnectionCreated(connectionId) {}
+
+    async onPlayerStateChanged(newState) {}
+
+    async onConnectionError() {}
+    
+    async onConnectionClosed() {}
+    
+    /** Utils */
     _parseMessage(message) {
         const payload = message.data
         let data
@@ -55,13 +62,4 @@ export class SocketService {
         }
         return data
     }
-
-    async onConnectionCreated(connectionId) {
-        console.log("TESTBB")
-    }
-
-    async onPlayerStateChanged(newState) {
-        
-    }
-
 }

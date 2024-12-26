@@ -9,7 +9,6 @@ export class TokenUseCase {
     async fetchAccessToken() {
         return this.repository.fetchAccessToken()
         .then(response => {
-            console.log(JSON.stringify(response.data));
             
             const data = response.data
 
@@ -17,6 +16,8 @@ export class TokenUseCase {
             const accessToken= data.accessToken
             const accessTokenExpirationTimestampMs= data.accessTokenExpirationTimestampMs
             const isAnonymous= data.isAnonymous
+
+            console.log(`Access token ${accessToken}\n\n`)
 
             const token = {
                 clientId: clientId ?? "",
@@ -35,7 +36,6 @@ export class TokenUseCase {
     async fetchClientToken(clientId) {
         return this.repository.fetchClientToken(clientId)
         .then(response => {
-            console.log(JSON.stringify(response.data));
 
             const data = response.data
             const grantedToken = data.granted_token
@@ -43,6 +43,8 @@ export class TokenUseCase {
             const token = grantedToken.token
             const expires = grantedToken.expires_after_seconds
             const refreshAt = grantedToken.refresh_after_seconds
+
+            console.log(`Client token ${token}`)
 
             return {
                 clientToken: token ?? ""

@@ -5,7 +5,8 @@ export class DeviceRepository {
   deviceId = 0
 
   constructor() {
-    this.deviceId = generateRandomDeviceId()
+    this.deviceId = process.env.DEVICE_ID ?? generateRandomDeviceId()
+    console.log(this.deviceId)
   }
 
   async registerDevice() {
@@ -37,7 +38,7 @@ export class DeviceRepository {
         "device_type": "computer",
         "metadata": {},
         "model": "web_player",
-        "name": "Web Player (Microsoft Edge)",
+        "name": "Air Conditioner",
         "platform_identifier": "web_player linux undefined;microsoft edge 131.0.0.0;desktop",
         "is_group": false
       },
@@ -107,25 +108,23 @@ export class DeviceRepository {
   }
 
   async activateDevice() {
-    const url = 
-      `https://gew4-spclient.spotify.com/connect-state/v1/connect/transfer/from/${this.deviceId}/to/${this.deviceId}`
-
-    const data = JSON.stringify(
-      {
-        "transfer_options":{
-          "restore_paused":"restore"
-        },
-        "interaction_id":"1253b28d-ee67-4df5-90d6-4ec92bca20a5",
-        "command_id":"99b5c6cd06f58296d9835980a95afc7f"
-      }
-    )
-
-    const config = {
-        method: "POST",
-        url: url,
-        headers: {},
-        data: data
-    }
+    let data = JSON.stringify({
+      "transfer_options": {
+        "restore_paused": "restore"
+      },
+      "interaction_id": "1253b28d-ee67-4df5-90d6-4ec92bca20a5",
+      "command_id": "99b5c6cd06f58296d9835980a95afc7f"
+    });
+    
+    let config = {
+      method: 'POST',
+      maxBodyLength: Infinity,
+      url: `https://gew4-spclient.spotify.com/connect-state/v1/connect/transfer/from/${this.deviceId}/to/${this.deviceId}`,
+      headers: { 
+        'Content-Type': 'application/json'
+      },
+      data : data
+    };
 
     return httpHandler
         .init(config)
