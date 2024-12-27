@@ -36,19 +36,33 @@ export class SocketService {
         if (data.type !== "message") return 
 
         const connectionId = data.headers["Spotify-Connection-Id"]
-        if (connectionId !== undefined)
+        if (connectionId !== undefined) {
             this.onConnectionCreated(connectionId)
+            return 
+        }
 
+        const payloads = data.payloads
+        Array.isArray(payloads) && payloads.length && this._processPayload(payloads[0])
     }
 
     async onConnectionCreated(connectionId) {}
+
+    _processPayload(payload) {
+        const commandType = payload?.type 
+        switch(commandType) {
+            case 'replace_state':
+                this.onPlayerStateChanged(payload)
+                break ;
+            default:    
+        }
+    }
 
     async onPlayerStateChanged(newState) {}
 
     async onConnectionError() {}
     
     async onConnectionClosed() {}
-    
+
     /** Utils */
     _parseMessage(message) {
         const payload = message.data

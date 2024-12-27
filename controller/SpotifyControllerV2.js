@@ -1,10 +1,12 @@
 import { getErrorCard } from "../card/ErrorCard.js"
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
+import { AudioUseCase } from "../domain/AudioUseCase.js"
 import { DeviceUseCase } from "../domain/DeviceUseCase.js"
 import { SocketService } from "../domain/SocketService.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
 import { TrackUseCase } from "../domain/TrackUseCase.js"
 import { httpHandler } from "../service/apiUtil/HttpHandler.js"
+import { AudioRepository } from "../service/AudioRepository.js"
 import { DeviceRepository } from "../service/DeviceRepository.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
@@ -45,6 +47,9 @@ export async function getSpotifyCard(request, response) {
 
     const trackRepository = new TrackRepository()
     const trackUseCase = new TrackUseCase(trackRepository)
+
+    // const audioRepository = new AudioRepository()
+    // const audioUseCase = new AudioUseCase(audioRepository)
 
     const onConnectionCreated = async (connectionId) => {
         httpHandler.setConnectionId(connectionId)
@@ -89,7 +94,15 @@ export async function getSpotifyCard(request, response) {
     }
 
     const onPlayerStateChanged = (command) => {
+        const stateMachine = command.state_machine
+        const stateRef = command.state_ref
 
+        // const state = stateMachine.states[state_index] 
+        // const track = stateMachine.tracks[state.track]
+
+        // const trackManifest = track.manifest 
+        // const trackUri = track.metadata.uri
+        
     }
 
     const socketService = new SocketService({
