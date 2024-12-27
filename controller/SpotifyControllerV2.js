@@ -10,6 +10,7 @@ import { AudioRepository } from "../service/AudioRepository.js"
 import { DeviceRepository } from "../service/DeviceRepository.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
+import { parseTrack } from "./utils/Utils.js"
 
 export async function getSpotifyCard(request, response) {
     const {
@@ -48,8 +49,8 @@ export async function getSpotifyCard(request, response) {
     const trackRepository = new TrackRepository()
     const trackUseCase = new TrackUseCase(trackRepository)
 
-    // const audioRepository = new AudioRepository()
-    // const audioUseCase = new AudioUseCase(audioRepository)
+    const audioRepository = new AudioRepository()
+    const audioUseCase = new AudioUseCase(audioRepository)
 
     const onConnectionCreated = async (connectionId) => {
         httpHandler.setConnectionId(connectionId)
@@ -64,8 +65,6 @@ export async function getSpotifyCard(request, response) {
             response.send(debug ? error : getErrorCard(error))
             return 
         }
-
-        await deviceUseCase.activateDevice()
 
         const track = await trackUseCase.getTrackById({
             trackId: deviceState.trackUri
@@ -91,18 +90,28 @@ export async function getSpotifyCard(request, response) {
     
         response.status(200)
         response.send(debug ? responseResult : spotifyCard)
+
+        await deviceUseCase.activateDevice()
     }
 
-    const onPlayerStateChanged = (command) => {
+    const onPlayerStateChanged = async (command) => {
         const stateMachine = command.state_machine
-        const stateRef = command.state_ref
-
-        // const state = stateMachine.states[state_index] 
-        // const track = stateMachine.tracks[state.track]
-
-        // const trackManifest = track.manifest 
-        // const trackUri = track.metadata.uri
         
+        const {
+            fileId = ""
+        } = parseTrack(stateMachine)
+
+        const cdnUrls = await audioUseCase.getCDNURL()
+
+        if (cdnUrls instanceof Error) {
+            response.status(500)
+            const error = cdnUrls.message
+            response.send(debug ? error : getErrorCard(error))
+            return
+        }
+
+        
+
     }
 
     const socketService = new SocketService({

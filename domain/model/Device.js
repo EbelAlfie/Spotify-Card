@@ -1,7 +1,9 @@
-const device_type = {
-    computer: 'computer',
-    game: 'game_console',
-    tv: 'tv',
-    cast_vid: 'cast_video',
-    cast_aud: 'cast_audio',   
+export const DeviceType = {
+    computer: "computer",
+    game: "game_console",
+    tv: "tv",
+    videoCast: "cast_video",
+    audioCast: "cast_audio",   
 }
+
+export const codec = 'audio/mp2t;codecs="mp4a.40.2"'

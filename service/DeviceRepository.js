@@ -1,3 +1,4 @@
+import { DeviceType } from "../domain/model/Device.js"
 import { httpHandler } from "./apiUtil/HttpHandler.js"
 import { generateDeviceIdObserver, generateRandomDeviceId } from "./Utils.js"
 
@@ -35,7 +36,7 @@ export class DeviceRepository {
           ]
         },
         "device_id": `${this.deviceId}`,
-        "device_type": "game_console",
+        "device_type": DeviceType.audioCast,
         "metadata": {},
         "model": "web_player",
         "name": "Air Conditioner",
