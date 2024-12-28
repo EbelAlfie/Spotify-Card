@@ -5,7 +5,7 @@ export class AudioUseCase {
         this.repository = audioRepository
     }
 
-    getCDNURL(fileId, fileFormat) {
+    async getCDNURL(fileId, fileFormat) {
         return this.repository.getCDNURL(fileId, fileFormat)
             .then(response => {
                 const data = response.data
@@ -18,6 +18,54 @@ export class AudioUseCase {
                     fileId: fileId,
                     uri: uri,
                     fallBackUrls: cdnUrl
+                }
+            })
+            .catch(error => {
+                return error
+            })
+    }
+
+    async getJsonManifest(fileId) {
+        return this.repository.getJsonManifest(fileId)
+            .then(response => {
+                const data = response.data
+                
+                const seektableVersion = data.seektable_version ?? 1
+                const offset = data.offset ?? 0
+                const timescale = data.timescale ?? 0
+                const segments = data.segments ?? []
+                const encoderDelaySample = data.encoder_delay_samples ?? 0
+                const paddingSample = data.padding_samples ?? 0
+                const pssh = data.pssh ?? ""
+                const indexRange = data.indexRange ?? []
+                
+                return {
+                    seektableVersion: seektableVersion,
+                    offset: offset,
+                    timescale: timescale,
+                    segments: segments,
+                    encoderDelaySample: encoderDelaySample,
+                    paddingSample: paddingSample,
+                    pssh: pssh,
+                    indexRange: indexRange
+                }
+            })
+            .catch(error => {
+                return error
+            })
+    }
+
+    async loadAudioBuffer(audioUrl, byteRange) {
+        return this.repository.loadAudioBuffer(audioUrl, byteRange)
+            .then(response => {
+                const data = response.data
+
+                const {requestURL: n, segment: a, byteRangeHeader: i, expectedLength: r} = data.metadata
+                return {
+                    requestURL: requestURL, 
+                    segment: segment, 
+                    byteRangeHeader: byteRangeHeader, 
+                    expectedLength: expectedLength
                 }
             })
             .catch(error => {

@@ -27,6 +27,67 @@ export function parseTrack(stateMachine) {
     const manifest = Array.isArray(trackManifest) && trackManifest.length && trackManifest[0]
     
     return {
-        fileId: manifest?.fileId ?? ""
+        fileId: manifest?.fileId ?? "",
+
     }
+}
+
+export function calculateSegment(manifest) {
+    let {
+        seektableVersion = 0,
+        offset = 0,
+        timescale = 0,
+        segments = [],
+        encoderDelaySample = "",
+        paddingSample = "",
+        pssh = "",
+        indexRange = []
+    } = manifest
+
+    const currentByteRange = {
+        audio: {
+            start: 0,
+            end: offset - 1
+        }
+    }
+
+    const segmentLength = segments.length
+    let contentSegments = new Array(segmentLength)
+
+    let start = 0
+
+    for (let i = 0; i < segmentLength; i++) {
+        const segment = segments[i]
+        if (!(null == segment ? void 0 : segment.length))
+            continue;
+
+        const [first, second] = segment
+        const end = second/ timescale
+
+        const contentSegment = {
+            index: i,
+            timeStart: start,
+            timeEnd: start + end,
+            byteRanges: {
+                audio: {
+                    start: offset,
+                    end: offset + (first - 1)
+                }
+            }
+        }
+
+        contentSegments[i] = contentSegment
+        start += end
+        offset += first
+        // Math.floor(end) > segmentLength && (segmentLength = Math.floor(end))
+    }
+
+    return contentSegments
+}
+
+export function getContentSegments(contentSegments, timeStart, timeEnd) {
+    const rangedSegments = []
+    for (const item of contentSegments)
+        item.timeStart <= timeEnd && item.timeEnd >= timeStart && rangedSegments.push(item)
+    return rangedSegments
 }

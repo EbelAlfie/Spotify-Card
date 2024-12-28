@@ -101,7 +101,7 @@ export async function getSpotifyCard(request, response) {
             fileId = ""
         } = parseTrack(stateMachine)
 
-        const cdnUrls = await audioUseCase.getCDNURL()
+        const cdnUrls = await audioUseCase.getCDNURL(fileId)
 
         if (cdnUrls instanceof Error) {
             response.status(500)
@@ -110,7 +110,23 @@ export async function getSpotifyCard(request, response) {
             return
         }
 
-        
+        const manifest = await audioUseCase.getJsonManifest(fileId)
+
+        if (manifest instanceof Error) {
+            response.status(500)
+            const error = manifest.message
+            response.send(debug ? error : getErrorCard(error))
+            return
+        }
+
+        const audioBuffer = await audioUseCase.loadAudioBuffer(cdnUrls.uri)
+
+        if (audioBuffer instanceof Error) {
+            response.status(500)
+            const error = audioBuffer.message
+            response.send(debug ? error : getErrorCard(error))
+            return
+        }
 
     }
 
