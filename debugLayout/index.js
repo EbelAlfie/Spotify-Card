@@ -1,3 +1,5 @@
+import axios from "axios"
+
 const card = document.getElementById("card-container")
 const title = document.getElementById("song-title")
 const artist = document.getElementById("song-artist")  
@@ -30,11 +32,18 @@ async function onAudioBuffer() {
     
     const mediaSource = new MediaSource()
     video.src = URL.createObjectURL(mediaSource)
-    mediaSource.addEventListener("sourceopen", onSourceOpen)
+    mediaSource.addEventListener("sourceopen", () => {
+        onSourceOpen(mediaSource)
+    })
 }
 
-function onSourceOpen() {
-    
+async function onSourceOpen(mediaSource) {
+    try {
+        const audioBuffer = (await axios.get("http://localhost:3030/audio"))
+
+    } catch(error) {
+
+    }
 }
 
 main()

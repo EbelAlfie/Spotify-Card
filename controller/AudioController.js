@@ -1,7 +1,9 @@
-import { AudioUseCase } from "../domain/AudioUseCase"
-import { TokenUseCase } from "../domain/TokenUseCase"
-import { AudioRepository } from "../service/AudioRepository"
-import { TokenRepository } from "../service/TokenRepository"
+import { AudioUseCase } from "../domain/AudioUseCase.js"
+import { DeviceUseCase } from "../domain/DeviceUseCase.js"
+import { TokenUseCase } from "../domain/TokenUseCase.js"
+import { AudioRepository } from "../service/AudioRepository.js"
+import { DeviceRepository } from "../service/DeviceRepository.js"
+import { TokenRepository } from "../service/TokenRepository.js"
 
 export async function getAudioBuffer(request, response) {
     const tokenRepository = new TokenRepository()
@@ -9,23 +11,13 @@ export async function getAudioBuffer(request, response) {
 
     const accessToken = await tokenUseCase.fetchAccessToken()
 
-    if (accessToken instanceof Error) {
-        response.status(500)
-        const error = accessToken.message
-        response.send(debug ? error : getErrorCard(error))
-        return 
-    }
+    if (isError(accessToken, response, debug)) return 
 
     const clientToken = await tokenUseCase.fetchClientToken({
         clientId: accessToken?.clientId
     })
 
-    if (clientToken instanceof Error) {
-        response.status(500)
-        const error = clientToken.message
-        response.send(debug ? error : getErrorCard(error))
-        return 
-    }
+    if (isError(clientToken, response, debug)) return 
 
     httpHandler.setAccessToken(accessToken)
     httpHandler.setClientToken(clientToken)
@@ -35,7 +27,6 @@ export async function getAudioBuffer(request, response) {
 
     const audioRepository = new AudioRepository()
     const audioUseCase = new AudioUseCase(audioRepository)
-
 
     const onPlayerStateChanged = async (command) => {
         const stateMachine = command.state_machine

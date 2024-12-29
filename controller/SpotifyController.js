@@ -1,11 +1,11 @@
-import { DeviceUseCase } from "../domain/DeviceUseCase"
-import { SocketService } from "../domain/SocketService"
-import { TokenUseCase } from "../domain/TokenUseCase"
-import { TrackUseCase } from "../domain/TrackUseCase"
-import { DeviceRepository } from "../service/DeviceRepository"
-import { TokenRepository } from "../service/TokenRepository"
-import { TrackRepository } from "../service/TrackRepository"
-import { isError } from "./utils/Utils"
+import { DeviceUseCase } from "../domain/DeviceUseCase.js"
+import { SocketService } from "../domain/SocketService.js"
+import { TokenUseCase } from "../domain/TokenUseCase.js"
+import { TrackUseCase } from "../domain/TrackUseCase.js"
+import { DeviceRepository } from "../service/DeviceRepository.js"
+import { TokenRepository } from "../service/TokenRepository.js"
+import { TrackRepository } from "../service/TrackRepository.js"
+import { isError } from "./utils/Utils.js"
 
 class SpotifyController {
     socketConnection = null

@@ -1,12 +1,9 @@
-import { getErrorCard } from "../card/ErrorCard.js"
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
-import { AudioUseCase } from "../domain/AudioUseCase.js"
 import { DeviceUseCase } from "../domain/DeviceUseCase.js"
 import { SocketService } from "../domain/SocketService.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
 import { TrackUseCase } from "../domain/TrackUseCase.js"
 import { httpHandler } from "../service/apiUtil/HttpHandler.js"
-import { AudioRepository } from "../service/AudioRepository.js"
 import { DeviceRepository } from "../service/DeviceRepository.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
@@ -22,13 +19,13 @@ export async function getSpotifyCard(request, response) {
 
     const accessToken = await tokenUseCase.fetchAccessToken()
 
-    if (isError(accessToken)) return 
+    if (isError(accessToken, response, debug)) return 
 
     const clientToken = await tokenUseCase.fetchClientToken({
         clientId: accessToken?.clientId
     })
 
-    if (isError(clientToken)) return 
+    if (isError(clientToken, response, debug)) return 
 
     httpHandler.setAccessToken(accessToken)
     httpHandler.setClientToken(clientToken)
@@ -46,13 +43,13 @@ export async function getSpotifyCard(request, response) {
 
         const deviceState = await deviceUseCase.connectDevice()
 
-        if (isError(deviceState)) return 
+        if (isError(deviceState, response, debug)) return 
 
         const track = await trackUseCase.getTrackById({
             trackId: deviceState.trackUri
         })
     
-        if (isError(track)) return 
+        if (isError(track, response, debug)) return 
     
         const image = track.images?.length > 0 ? track?.images[0]?.url : ""
     
