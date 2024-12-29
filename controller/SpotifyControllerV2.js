@@ -10,7 +10,7 @@ import { AudioRepository } from "../service/AudioRepository.js"
 import { DeviceRepository } from "../service/DeviceRepository.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
-import { parseTrack } from "./utils/Utils.js"
+import { isError, parseTrack } from "./utils/Utils.js"
 
 export async function getSpotifyCard(request, response) {
     const {
@@ -22,23 +22,13 @@ export async function getSpotifyCard(request, response) {
 
     const accessToken = await tokenUseCase.fetchAccessToken()
 
-    if (accessToken instanceof Error) {
-        response.status(500)
-        const error = accessToken.message
-        response.send(debug ? error : getErrorCard(error))
-        return 
-    }
+    if (isError(accessToken)) return 
 
     const clientToken = await tokenUseCase.fetchClientToken({
         clientId: accessToken?.clientId
     })
 
-    if (clientToken instanceof Error) {
-        response.status(500)
-        const error = clientToken.message
-        response.send(debug ? error : getErrorCard(error))
-        return 
-    }
+    if (isError(clientToken)) return 
 
     httpHandler.setAccessToken(accessToken)
     httpHandler.setClientToken(clientToken)
@@ -49,9 +39,6 @@ export async function getSpotifyCard(request, response) {
     const trackRepository = new TrackRepository()
     const trackUseCase = new TrackUseCase(trackRepository)
 
-    const audioRepository = new AudioRepository()
-    const audioUseCase = new AudioUseCase(audioRepository)
-
     const onConnectionCreated = async (connectionId) => {
         httpHandler.setConnectionId(connectionId)
         
@@ -59,23 +46,13 @@ export async function getSpotifyCard(request, response) {
 
         const deviceState = await deviceUseCase.connectDevice()
 
-        if (deviceState instanceof Error) {
-            response.status(500)
-            const error = deviceState.message
-            response.send(debug ? error : getErrorCard(error))
-            return 
-        }
+        if (isError(deviceState)) return 
 
         const track = await trackUseCase.getTrackById({
             trackId: deviceState.trackUri
         })
     
-        if (track instanceof Error) {
-            response.status(500)
-            const error = track.message
-            response.send(debug ? error : getErrorCard(error))
-            return
-        }
+        if (isError(track)) return 
     
         const image = track.images?.length > 0 ? track?.images[0]?.url : ""
     
@@ -90,54 +67,12 @@ export async function getSpotifyCard(request, response) {
     
         response.status(200)
         response.send(debug ? responseResult : spotifyCard)
-
-        response.status(200)
-        response.send(debug ? responseResult : spotifyCard)
-
-        await deviceUseCase.activateDevice()
-    }
-
-    const onPlayerStateChanged = async (command) => {
-        const stateMachine = command.state_machine
-        
-        const {
-            fileId = ""
-        } = parseTrack(stateMachine)
-
-        const cdnUrls = await audioUseCase.getCDNURL(fileId)
-
-        if (cdnUrls instanceof Error) {
-            response.status(500)
-            const error = cdnUrls.message
-            response.send(debug ? error : getErrorCard(error))
-            return
-        }
-
-        const manifest = await audioUseCase.getJsonManifest(fileId)
-
-        if (manifest instanceof Error) {
-            response.status(500)
-            const error = manifest.message
-            response.send(debug ? error : getErrorCard(error))
-            return
-        }
-
-        const audioBuffer = await audioUseCase.loadAudioBuffer(cdnUrls.uri)
-
-        if (audioBuffer instanceof Error) {
-            response.status(500)
-            const error = audioBuffer.message
-            response.send(debug ? error : getErrorCard(error))
-            return
-        }
-
     }
 
     const socketService = new SocketService({
         accessToken: accessToken.accessToken
     })
     socketService.onConnectionCreated = onConnectionCreated
-    socketService.onPlayerStateChanged = onPlayerStateChanged
 
     socketService.authenticateWebSocket()
 }

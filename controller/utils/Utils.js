@@ -1,3 +1,5 @@
+import { getErrorCard } from "../../card/ErrorCard";
+
 export const createStateRef = (stateMachine, stateRef) => {
     if (!stateRef)
         return null;
@@ -90,4 +92,15 @@ export function getContentSegments(contentSegments, timeStart, timeEnd) {
     for (const item of contentSegments)
         item.timeStart <= timeEnd && item.timeEnd >= timeStart && rangedSegments.push(item)
     return rangedSegments
+}
+
+/** True if it is error */
+export async function isError(error, response) {
+    if (accessToken instanceof Error) {
+        response.status(500)
+        const errorMessage = error.message
+        response.send(debug ? errorMessage : getErrorCard(errorMessage))
+        return true
+    }
+    return false
 }
