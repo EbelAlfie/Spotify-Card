@@ -91,6 +91,9 @@ export async function getSpotifyCard(request, response) {
         response.status(200)
         response.send(debug ? responseResult : spotifyCard)
 
+        response.status(200)
+        response.send(debug ? responseResult : spotifyCard)
+
         await deviceUseCase.activateDevice()
     }
 

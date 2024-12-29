@@ -33,7 +33,13 @@ export class AudioRepository {
             .request()
     }
 
-    async loadAudioBuffer(audioUrl, byteRange) {
+    async loadAudioBuffer(audioUrl, contentSegments) {
+        const {
+            byteRange = [],
+            timeStart = timeStart,
+            timeEnd = timeEnd
+        } = contentSegments
+
         const audioRange = byteRange.audio
         , range = `${audioRange.start}-${audioRange.end}`
         , expectedLength = audioRange.end + 1 - audioRange.start
@@ -53,8 +59,8 @@ export class AudioRepository {
                     "index": -1,
                     "init": true,
                     "cacheBufferSet": true,
-                    "timeStart": 0,
-                    "timeEnd": 0,
+                    "timeStart": timeStart,
+                    "timeStart": timeStart,
                     "byteRanges": {
                         "audio": {
                             "start":audioRange.start,
@@ -62,7 +68,7 @@ export class AudioRepository {
                         }
                     }
                 },
-                "byteRangeHeader": "0-1241",
+                "byteRangeHeader": `${range}`,
                 "expectedLength": expectedLength
             }
         }
