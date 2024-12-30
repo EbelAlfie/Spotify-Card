@@ -21,6 +21,7 @@ export class AudioUseCase {
                 }
             })
             .catch(error => {
+                console.log(error)
                 return error
             })
     }
@@ -51,6 +52,7 @@ export class AudioUseCase {
                 }
             })
             .catch(error => {
+                console.log(error)
                 return error
             })
     }
@@ -60,15 +62,20 @@ export class AudioUseCase {
             .then(response => {
                 const data = response.data
 
-                const {requestURL: n, segment: a, byteRangeHeader: i, expectedLength: r} = data.metadata
-                return {
-                    requestURL: requestURL, 
-                    segment: segment, 
-                    byteRangeHeader: byteRangeHeader, 
-                    expectedLength: expectedLength
-                }
+                console.log(data)
+                
+                return data
+
+                // const {requestURL: n, segment: a, byteRangeHeader: i, expectedLength: r} = data.metadata
+                // return {
+                //     requestURL: requestURL, 
+                //     segment: segment, 
+                //     byteRangeHeader: byteRangeHeader, 
+                //     expectedLength: expectedLength
+                // }
             })
             .catch(error => {
+                console.log(error)
                 return error
             })
     }

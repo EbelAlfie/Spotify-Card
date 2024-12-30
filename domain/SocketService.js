@@ -2,12 +2,13 @@ export class SocketService {
     constructor(config) {
         const {
             accessToken = ""
-        } = config
+        } = config ?? {}
 
         this.accessToken = accessToken ?? ""
     }
 
-    async authenticateWebSocket() {
+    async authenticateWebSocket(accessToken) {
+        this.accessToken = accessToken ?? ""
         const socketUrl = `wss://gew4-dealer.spotify.com/?access_token=${this.accessToken}`
         
         this.socket = new WebSocket(socketUrl)
@@ -47,6 +48,8 @@ export class SocketService {
 
     async onConnectionCreated(connectionId) {}
 
+    async onPlayerStateChanged(newState) {}
+
     _processPayload(payload) {
         const commandType = payload?.type 
         switch(commandType) {
@@ -56,8 +59,6 @@ export class SocketService {
             default:    
         }
     }
-
-    async onPlayerStateChanged(newState) {}
 
     async onConnectionError() {}
     
@@ -77,3 +78,5 @@ export class SocketService {
         return data
     }
 }
+
+export const socketService = new SocketService()

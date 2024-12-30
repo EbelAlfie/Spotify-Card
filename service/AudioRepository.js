@@ -10,7 +10,8 @@ export class AudioRepository {
         
         const config = {
             method: "GET",
-            url: url
+            url: url,
+            headers: {}
         }
 
         return httpHandler
@@ -35,42 +36,41 @@ export class AudioRepository {
 
     async loadAudioBuffer(audioUrl, contentSegments) {
         const {
-            byteRange = [],
+            byteRanges = {},
             timeStart = timeStart,
             timeEnd = timeEnd
-        } = contentSegments
+        } = contentSegments ?? {}
 
-        const audioRange = byteRange.audio
+        const audioRange = byteRanges.audio
         , range = `${audioRange.start}-${audioRange.end}`
         , expectedLength = audioRange.end + 1 - audioRange.start
 
         const config = {
             method: "GET",
+            url: audioUrl,
             responseType: "arraybuffer",
             headers: {
                 "Range": `bytes=${range}`
             },
-            signal: {},
-            timing: true,
             maxBodyLength: Infinity,
-            metadata: {
-                "requestURL": audioUrl,
-                "segment": {
-                    "index": -1,
-                    "init": true,
-                    "cacheBufferSet": true,
-                    "timeStart": timeStart,
-                    "timeStart": timeStart,
-                    "byteRanges": {
-                        "audio": {
-                            "start":audioRange.start,
-                            "end": audioRange.end
-                        }
-                    }
-                },
-                "byteRangeHeader": `${range}`,
-                "expectedLength": expectedLength
-            }
+            // metadata: {
+            //     "requestURL": audioUrl,
+            //     "segment": {
+            //         "index": -1,
+            //         "init": true,
+            //         "cacheBufferSet": true,
+            //         "timeStart": timeStart,
+            //         "timeStart": timeStart,
+            //         "byteRanges": {
+            //             "audio": {
+            //                 "start":audioRange.start,
+            //                 "end": audioRange.end
+            //             }
+            //         }
+            //     },
+            //     "byteRangeHeader": `${range}`,
+            //     "expectedLength": expectedLength
+            // }
         }
 
         return httpHandler

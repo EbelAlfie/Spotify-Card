@@ -13,9 +13,8 @@ export const createStateRef = (stateMachine, stateRef) => {
     }
 }
 
-export function parseTrack(stateMachine) {
-    const stateRef = command.state_ref
-    const stateIndex = stateRef.stateIndex
+export function parseTrack(stateRef, stateMachine) {
+    const stateIndex = stateRef.state_index
 
     const state = stateMachine.states[stateIndex] 
     const track = stateMachine.tracks[state.track]
@@ -29,8 +28,7 @@ export function parseTrack(stateMachine) {
     const manifest = Array.isArray(trackManifest) && trackManifest.length && trackManifest[0]
     
     return {
-        fileId: manifest?.fileId ?? "",
-
+        fileId: manifest?.file_id ?? "",
     }
 }
 

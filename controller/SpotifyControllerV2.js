@@ -1,6 +1,6 @@
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
 import { DeviceUseCase } from "../domain/DeviceUseCase.js"
-import { SocketService } from "../domain/SocketService.js"
+import { socketService, SocketService } from "../domain/SocketService.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
 import { TrackUseCase } from "../domain/TrackUseCase.js"
 import { httpHandler } from "../service/apiUtil/HttpHandler.js"
@@ -66,10 +66,10 @@ export async function getSpotifyCard(request, response) {
         response.send(debug ? responseResult : spotifyCard)
     }
 
-    const socketService = new SocketService({
-        accessToken: accessToken.accessToken
-    })
+    // const socketService = new SocketService({
+    //     accessToken: accessToken.accessToken
+    // })
     socketService.onConnectionCreated = onConnectionCreated
 
-    socketService.authenticateWebSocket()
+    socketService.authenticateWebSocket(accessToken.accessToken)
 }

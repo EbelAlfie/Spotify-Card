@@ -1,4 +1,4 @@
-import { getAudioBuffer } from "../controller/AudioController";
+import { getAudioBuffer } from "../controller/AudioController.js";
 
 export const Audio = {
     Route: "/audio",

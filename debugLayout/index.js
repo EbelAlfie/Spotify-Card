@@ -1,5 +1,3 @@
-import axios from "axios"
-
 const card = document.getElementById("card-container")
 const title = document.getElementById("song-title")
 const artist = document.getElementById("song-artist")  
@@ -21,6 +19,8 @@ async function main() {
         cover.setAttribute("href", imageUrl)
         track.innerHTML = isPlaying ? "Playing" : "Paused"
 
+        onAudioBuffer()
+
     } catch (error) {
         console.log(error)
         title.innerHTML = error
@@ -33,16 +33,32 @@ async function onAudioBuffer() {
     const mediaSource = new MediaSource()
     video.src = URL.createObjectURL(mediaSource)
     mediaSource.addEventListener("sourceopen", () => {
-        onSourceOpen(mediaSource)
+        onSourceOpen(mediaSource, video)
     })
 }
 
-async function onSourceOpen(mediaSource) {
+async function onSourceOpen(mediaSource, video) {
+    var sourceBuffer = mediaSource.addSourceBuffer('audio/mp4; codecs="mp4a.40.2"');
     try {
-        const audioBuffer = (await axios.get("http://localhost:3030/audio"))
+        const audioBuffer = (await axios.request({
+            method: 'GET',
+            url: "http://localhost:3030/audio",
+            responseType: "arraybuffer"
+          }))
 
+        const audio = buffer.Buffer.from(audioBuffer.data)
+        
+        console.log(`buffer ${audio}`)
+        
+        sourceBuffer.addEventListener('updateend', function (_) {
+            document.addEventListener("mouseover", () => {
+                video.play()
+            })
+        })
+
+        sourceBuffer.appendBuffer(audio)
     } catch(error) {
-
+        console.log(`audio error ${error}`)
     }
 }
 
