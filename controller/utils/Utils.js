@@ -87,7 +87,10 @@ export function calculateSegment(manifest) {
         // Math.floor(end) > segmentLength && (segmentLength = Math.floor(end))
     }
 
-    return contentSegments
+    return {
+        initSegment: initSegment,
+        contentSegments: contentSegments
+    }
 }
 
 export function getSegmentForRange(contentSegments, timeStart = 0, timeEnd = 12) {
