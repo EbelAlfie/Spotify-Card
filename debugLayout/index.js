@@ -2,7 +2,10 @@ const card = document.getElementById("card-container")
 const title = document.getElementById("song-title")
 const artist = document.getElementById("song-artist")  
 const cover = document.getElementById("album-image")  
-const track = document.getElementById("track-status")  
+const track = document.getElementById("track-status")
+
+var mimeCodec = 'audio/mp4; codecs="mp4a.40.2"';
+var video = document.querySelector('video');
 
 async function main() {
     try {
@@ -28,9 +31,9 @@ async function main() {
 }
 
 async function onAudioBuffer() {
-    const video = document.createElement("video")
+    const video = document.querySelector("video")
     
-    const mediaSource = new MediaSource()
+    const mediaSource = new MediaSource
     video.src = URL.createObjectURL(mediaSource)
     mediaSource.addEventListener("sourceopen", () => {
         onSourceOpen(mediaSource, video)
@@ -43,15 +46,23 @@ async function onSourceOpen(mediaSource, video) {
         const audioBuffer = (await axios.request({
             method: 'GET',
             url: "http://localhost:3030/audio",
-            responseType: "arraybuffer"
-          }))
+            responseType: "arraybuffer",
+            headers: {
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 
+                'Accept-Language': 'en-US,en;q=0.9,id;q=0.8', 
+                'Cache-Control': 'max-age=0', 
+                'Connection': 'keep-alive', 
+            }
+        }))
 
-        const audio = buffer.Buffer.from(audioBuffer.data)
+        const data = audioBuffer.data
+        const audio = buffer.Buffer.from(data)
         
         console.log(`buffer ${audio}`)
         
         sourceBuffer.addEventListener('updateend', function (_) {
             document.addEventListener("mouseover", () => {
+                video.load()
                 video.play()
             })
         })

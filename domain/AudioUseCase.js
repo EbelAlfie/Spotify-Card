@@ -61,18 +61,14 @@ export class AudioUseCase {
         return this.repository.loadAudioBuffer(audioUrl, byteRange)
             .then(response => {
                 const data = response.data
+                const headers = response.headers
 
                 console.log(data)
                 
-                return data
-
-                // const {requestURL: n, segment: a, byteRangeHeader: i, expectedLength: r} = data.metadata
-                // return {
-                //     requestURL: requestURL, 
-                //     segment: segment, 
-                //     byteRangeHeader: byteRangeHeader, 
-                //     expectedLength: expectedLength
-                // }
+                return {
+                    data: data,
+                    headers: headers
+                }
             })
             .catch(error => {
                 console.log(error)

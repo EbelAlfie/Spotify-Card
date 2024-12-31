@@ -45,6 +45,25 @@ export class AudioRepository {
         , range = `${audioRange.start}-${audioRange.end}`
         , expectedLength = audioRange.end + 1 - audioRange.start
 
+        // metadata: {
+        //     "requestURL": audioUrl,
+        //     "segment": {
+        //         "index": -1,
+        //         "init": true,
+        //         "cacheBufferSet": true,
+        //         "timeStart": timeStart,
+        //         "timeStart": timeStart,
+        //         "byteRanges": {
+        //             "audio": {
+        //                 "start":audioRange.start,
+        //                 "end": audioRange.end
+        //             }
+        //         }
+        //     },
+        //     "byteRangeHeader": `${range}`,
+        //     "expectedLength": expectedLength
+        // }
+
         const config = {
             method: "GET",
             url: audioUrl,
@@ -53,24 +72,6 @@ export class AudioRepository {
                 "Range": `bytes=${range}`
             },
             maxBodyLength: Infinity,
-            // metadata: {
-            //     "requestURL": audioUrl,
-            //     "segment": {
-            //         "index": -1,
-            //         "init": true,
-            //         "cacheBufferSet": true,
-            //         "timeStart": timeStart,
-            //         "timeStart": timeStart,
-            //         "byteRanges": {
-            //             "audio": {
-            //                 "start":audioRange.start,
-            //                 "end": audioRange.end
-            //             }
-            //         }
-            //     },
-            //     "byteRangeHeader": `${range}`,
-            //     "expectedLength": expectedLength
-            // }
         }
 
         return httpHandler

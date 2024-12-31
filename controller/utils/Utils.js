@@ -44,10 +44,15 @@ export function calculateSegment(manifest) {
         indexRange = []
     } = manifest
 
-    const currentByteRange = {
-        audio: {
-            start: 0,
-            end: offset - 1
+    const initSegment = {
+        index: -1,
+        timeEnd: 0,
+        timeStart: 0,
+        byteRanges: {
+            audio: {
+                start: 0,
+                end: manifest.offset - 1
+            }
         }
     }
 
@@ -85,10 +90,10 @@ export function calculateSegment(manifest) {
     return contentSegments
 }
 
-export function getContentSegments(contentSegments, timeStart, timeEnd) {
-    const rangedSegments = []
+export function getSegmentForRange(contentSegments, timeStart = 0, timeEnd = 12) {
+    const rangedSegments = [];
     for (const item of contentSegments)
-        item.timeStart <= timeEnd && item.timeEnd >= timeStart && rangedSegments.push(item)
+        item.timeStart <= timeEnd && item.timeEnd >= timeStart && rangedSegments.push(item);
     return rangedSegments
 }
 

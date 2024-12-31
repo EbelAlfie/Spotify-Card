@@ -10,7 +10,7 @@ import { AudioRepository } from "../service/AudioRepository.js"
 import { DeviceRepository } from "../service/DeviceRepository.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
-import { calculateSegment, isError, parseTrack } from "./utils/Utils.js"
+import { calculateSegment, getSegmentForRange, isError, parseTrack } from "./utils/Utils.js"
 
 export async function getAudioBuffer(request, response) {
     const {
@@ -56,14 +56,15 @@ export async function getAudioBuffer(request, response) {
         if (isError(manifest, response, debug)) return
 
         const contentSegments = calculateSegment(manifest)
+        const rangedSegments = getSegmentForRange(contentSegments)
 
-        const audioBuffer = await audioUseCase.loadAudioBuffer(cdnUrls.uri, contentSegments[0])
+        const audioBuffer = await audioUseCase.loadAudioBuffer(cdnUrls.uri, rangedSegments[0])
 
         if (isError(audioBuffer, response, debug)) return
 
-        response.status(200)
-        response.type("application/octet-stream")
-        response.send(audioBuffer)
+        response.status(206)
+        response.set(audioBuffer.headers)
+        response.send(audioBuffer.data)
     }
 
     socketService.onPlayerStateChanged = onPlayerStateChanged
