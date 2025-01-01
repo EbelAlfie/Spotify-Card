@@ -1,3 +1,4 @@
+
 const card = document.getElementById("card-container")
 const title = document.getElementById("song-title")
 const artist = document.getElementById("song-artist")  
@@ -8,6 +9,8 @@ var mimeCodec = 'audio/mp4; codecs="mp4a.40.2"';
 var video = document.querySelector('video');
 
 async function main() {
+    onAudioBuffer()
+
     try {
         const {
             imageUrl = "", 
@@ -22,55 +25,62 @@ async function main() {
         cover.setAttribute("href", imageUrl)
         track.innerHTML = isPlaying ? "Playing" : "Paused"
 
-        onAudioBuffer()
-
     } catch (error) {
         console.log(error)
         title.innerHTML = error
     }
 }
 
-async function onAudioBuffer() {
-    const video = document.querySelector("video")
-    
-    const mediaSource = new MediaSource
-    video.src = URL.createObjectURL(mediaSource)
-    mediaSource.addEventListener("sourceopen", () => {
-        onSourceOpen(mediaSource, video)
-    })
+async function playAudio(buffer) {
+    const blob = new Blob([buffer], { type: mimeCodec });
+    const url = window.URL.createObjectURL(blob);
+    video.src = url;
 }
 
-async function onSourceOpen(mediaSource, video) {
+async function onAudioBuffer() {    
+    const mediaSource = new MediaSource
+    video.src = URL.createObjectURL(mediaSource)
+
+    mediaSource.addEventListener("sourceopen", onSourceOpen)
+}
+
+async function onSourceOpen(_) {
+    let mediaSource = this
     var sourceBuffer = mediaSource.addSourceBuffer('audio/mp4; codecs="mp4a.40.2"');
     try {
-        const audioBuffer = (await axios.request({
-            method: 'GET',
-            url: "http://localhost:3030/audio",
-            responseType: "arraybuffer",
-            headers: {
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7', 
-                'Accept-Language': 'en-US,en;q=0.9,id;q=0.8', 
-                'Cache-Control': 'max-age=0', 
-                'Connection': 'keep-alive', 
+        fetchXhr(
+            "https://audio-ak.spotifycdn.com/audio/c361cbd42012ce4095a6b44e120afce1c092b54b?__token__=exp=1735811410~hmac=6a797e1f07d4adbdd681d6635ec9cc17e28a4721c92193ee3e875a9c46426a31",
+            // resp.url,
+            (audioBuffer) =>{
+                console.log(audioBuffer)
+                
+                sourceBuffer.addEventListener('updateend', function (_) {
+                    mediaSource.endOfStream()
+                    video.play()
+                })
+
+                sourceBuffer.appendBuffer(audioBuffer)
             }
-        }))
-
-        const data = audioBuffer.data
-        const audio = buffer.Buffer.from(data)
-        
-        console.log(`buffer ${audio}`)
-        
-        sourceBuffer.addEventListener('updateend', function (_) {
-            document.addEventListener("mouseover", () => {
-                video.load()
-                video.play()
-            })
-        })
-
-        sourceBuffer.appendBuffer(audio)
+        )
     } catch(error) {
         console.log(`audio error ${error}`)
     }
+}
+
+function fetchXhr(url, callback) {
+    console.log(url);
+    var xhr = new XMLHttpRequest;
+
+    xhr.open('GET', url);
+    xhr.setRequestHeader("Accept", "*/*");
+    xhr.setRequestHeader("Accept-Language", "en-US,en;q=0.9,id;q=0.8");
+    xhr.setRequestHeader("Range", "bytes=0-1807");
+
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = function () {
+      callback(xhr.response);
+    };
+    xhr.send();
 }
 
 main()

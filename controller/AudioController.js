@@ -64,19 +64,21 @@ export async function getAudioBuffer(request, response) {
 
         const audioBuffer = await audioUseCase.loadAudioBuffer(cdnUrls.uri, initSegment)
 
-        let buffer = new Buffer.from(audioBuffer.data)
-        for(let i = 0; i < rangedSegments.length; i++) {
-            const bufferPerSegment = await audioUseCase.loadAudioBuffer(cdnUrls.uri, rangedSegments[i])
-            if (isError(cdnUrls, response, debug)) break ;
+        let buffer = Buffer.from(audioBuffer.data)
+        // for(let i = 0; i < rangedSegments.length; i++) {
+        //     const bufferPerSegment = await audioUseCase.loadAudioBuffer(cdnUrls.uri, rangedSegments[i])
+        //     if (isError(cdnUrls, response, debug)) break ;
 
-            buffer = buffer.concat(bufferPerSegment.data)
-        }
+        //     buffer = Buffer.concat([buffer, bufferPerSegment.data])
+        // }
 
         if (isError(audioBuffer, response, debug)) return
 
+        console.log(cdnUrls.uri)
+
         response.status(206)
         response.set(audioBuffer.headers)
-        response.send(buffer)
+        response.send(audioBuffer.data)
     }
 
     socketService.onPlayerStateChanged = onPlayerStateChanged
