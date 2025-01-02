@@ -60,3 +60,32 @@ function configureScale(props) {
     track.setAttribute("x", stat.x)
     track.setAttribute("y", stat.y)
 }
+
+export async function fetchXhr(param) {
+    const {
+        url, 
+        start = 0, 
+        end = 1807, 
+        callback
+    } = param
+    
+    console.log(url);
+    var xhr = new XMLHttpRequest;
+
+    xhr.open('GET', url);
+    xhr.setRequestHeader("Accept", "*/*");
+    xhr.setRequestHeader("Accept-Language", "en-US,en;q=0.9,id;q=0.8");
+    xhr.setRequestHeader("Range", `bytes=${start}-${end}`);
+
+    xhr.responseType = 'arraybuffer';
+    xhr.onload = () => {
+        console.log(`res headers ${xhr.getAllResponseHeaders()}`)
+        callback({
+            response: xhr.response,
+            contentLength: xhr.getResponseHeader("content-length"),
+            start: start,
+            end: end
+        });
+    };
+    xhr.send();
+}

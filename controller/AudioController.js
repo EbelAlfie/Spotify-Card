@@ -10,7 +10,7 @@ import { AudioRepository } from "../service/AudioRepository.js"
 import { DeviceRepository } from "../service/DeviceRepository.js"
 import { TokenRepository } from "../service/TokenRepository.js"
 import { TrackRepository } from "../service/TrackRepository.js"
-import { calculateSegment, getSegmentForRange, isError, parseTrack } from "./utils/Utils.js"
+import { appendBuffer, calculateSegment, getSegmentForRange, isError, parseTrack } from "./utils/Utils.js"
 
 export async function getAudioBuffer(request, response) {
     const {
@@ -65,12 +65,12 @@ export async function getAudioBuffer(request, response) {
         const audioBuffer = await audioUseCase.loadAudioBuffer(cdnUrls.uri, initSegment)
 
         let buffer = Buffer.from(audioBuffer.data)
-        // for(let i = 0; i < rangedSegments.length; i++) {
-        //     const bufferPerSegment = await audioUseCase.loadAudioBuffer(cdnUrls.uri, rangedSegments[i])
-        //     if (isError(cdnUrls, response, debug)) break ;
+        for(let i = 0; i < rangedSegments.length; i++) {
+            const bufferPerSegment = await audioUseCase.loadAudioBuffer(cdnUrls.uri, rangedSegments[i])
+            if (isError(cdnUrls, response, debug)) break ;
 
-        //     buffer = Buffer.concat([buffer, bufferPerSegment.data])
-        // }
+            buffer = appendBuffer(buffer, bufferPerSegment.data)
+        }
 
         if (isError(audioBuffer, response, debug)) return
 

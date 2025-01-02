@@ -110,3 +110,10 @@ export function isError(error, response, debug) {
     }
     return false
 }
+
+export function appendBuffer(source, target) {
+    const newBuffer = new Uint8Array(source.byteLength + target.byteLength);
+    newBuffer.set(new Uint8Array(source), 0),
+    newBuffer.set(new Uint8Array(target), source.byteLength)
+    return newBuffer
+}
