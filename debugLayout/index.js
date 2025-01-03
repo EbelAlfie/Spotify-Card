@@ -1,5 +1,5 @@
 import { MediaSourceManager } from "./MediaSourceManager.js"
-import { fetchXhr } from "./Utils.js"
+import { fetchXhr, logEvent } from "./Utils.js"
 
 const card = document.getElementById("card-container")
 const title = document.getElementById("song-title")
@@ -82,15 +82,16 @@ async function onSourceOpen(_) {
             video.addEventListener('timeupdate', checkBuffer);
             video.addEventListener('canplay', function () {
                 segmentDuration = video.duration / totalSegments;
+                console.log("Play")
                 video.play();
             });
             video.addEventListener("error", (error) => {
-                console.log(`Error ${error}`)
+                logEvent(`error`, error) 
             })
-            video.addEventListener("stalled", (event) => { console.log(`stalled ${event}`) });
-            video.addEventListener("suspend", (event) => console.log(`sus ${event}`));
-            video.addEventListener("*", (event) => console.log(`all ${event}`));
-            video.addEventListener("abort", (event) => console.log(`all ${event}`));
+            video.addEventListener("stalled", (event) => { logEvent(`stalled`, event) });
+            video.addEventListener("suspend", (event) => logEvent(`sus`, event));
+            video.addEventListener("*", (event) => logEvent(`all`, event));
+            video.addEventListener("abort", (event) => logEvent(`abrt`, event));
 
             sourceBuffer.appendBuffer(response)
             // video.addEventListener('seeking', seek);
@@ -135,17 +136,46 @@ function getCurrentSegment () {
     return ((video.currentTime / segmentDuration) | 0) + 1;
   };
 
-  function haveAllSegments () {
-    return requestedSegments.every(function (val) { return !!val; });
-  };
+function haveAllSegments () {
+return requestedSegments.every(function (val) { return !!val; });
+};
 
-  function shouldFetchNextSegment (currentSegment) {
-    return video.currentTime > segmentDuration * currentSegment * 0.8 &&
-      !requestedSegments[currentSegment];
-  };
+function shouldFetchNextSegment (currentSegment) {
+return video.currentTime > segmentDuration * currentSegment * 0.8 &&
+    !requestedSegments[currentSegment];
+};
+
+function playAudio() {
+    fetchXhr({
+        url: songUrl,
+        callback: (result) =>{
+            const {
+                response = {},
+                contentLength = 0,
+                start = 0,
+                end = 0 
+            } = result ?? {}
+            
+            play(response)
+        },
+        start: contentStart,
+        end: contentEnd
+    })
+}
+
+async function play(data) {
+    const context = new window.AudioContext;
+    const buffer = await context.decodeAudioData(data);
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(context.destination);
+    source.start();
+}
 
 function main() {
     setupAudioPlayer()
+
+    // playAudio()
 
     getSpotiCardData()
 }

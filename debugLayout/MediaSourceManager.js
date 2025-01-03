@@ -9,4 +9,8 @@ export class MediaSourceManager {
         this.currentInitSegments = {}
         return this.mediaSource
     }
+
+    onSourceOpen(_) {
+
+    }
 }

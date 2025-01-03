@@ -61,6 +61,10 @@ function configureScale(props) {
     track.setAttribute("y", stat.y)
 }
 
+export function logEvent(tag, event) {
+    console.log(tag + " " + JSON.stringify(event))
+}
+
 export async function fetchXhr(param) {
     const {
         url, 
