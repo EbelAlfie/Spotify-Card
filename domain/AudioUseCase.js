@@ -60,8 +60,8 @@ export class AudioUseCase {
     async loadAudioBuffer(audioUrl, byteRange) {
         return this.repository.loadAudioBuffer(audioUrl, byteRange)
             .then(response => {
-                const data = response.data
-                const headers = response.headers
+                const data = response?.data ?? {}
+                const headers = response?.headers ?? {}
 
                 console.log(data)
                 

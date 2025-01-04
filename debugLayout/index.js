@@ -9,11 +9,11 @@ const track = document.getElementById("track-status")
 
 var mimeCodec = 'audio/mp4; codecs="mp4a.40.2"';
 var video = document.querySelector('video');
-const songUrl = 
-    "https://audio-ak.spotifycdn.com/audio/840241d867ec0cf541193c8e6a629377ea7a8802?__token__=exp=1735921385~hmac=efcbd48329a1c032629bbb15e72c3f10dcdc4b7ae7b152441bd8a5f3dc26de8f"
+const songUrl = //"http://localhost:3030/audio"
+    "https://audio-ak.spotifycdn.com/audio/c361cbd42012ce4095a6b44e120afce1c092b54b?__token__=exp=1736086303~hmac=856ea4094a65bd8f0ef4f883e9bf6bbba474318d411206e93c0c02d0f10c873a"
 
-const contentStart = 0
-const contentEnd = 2916077
+const contentStart = 1808
+const contentEnd = 164941
 
 var sourceBuffer = null
 
@@ -41,13 +41,24 @@ async function getSpotiCardData() {
 async function setupAudioPlayer() {    
     if ('MediaSource' in window && MediaSource.isTypeSupported(mimeCodec)) {
         const mediaSource = (new MediaSourceManager()).initMediaSource()
+
+        if (video.ms) return 
+
+        mediaSource.video = video
+	    video.ms = mediaSource
+
         video.currentTime = 0 
         video.src = URL.createObjectURL(mediaSource)
 
         mediaSource.addEventListener('sourceopen', onSourceOpen);
+        mediaSource.addEventListener('sourceclose', onSourceClose);
     } else {
         console.log("unsupported mimetype/ codec")
     }
+}
+
+function onSourceClose(error) {
+    console.log(`Source close ${JSON.stringify(error)}`)
 }
 
 var totalSegments = 10;
@@ -85,6 +96,52 @@ async function onSourceOpen(_) {
                 console.log("Play")
                 video.play();
             });
+            video.addEventListener("timeupdate", (event) => {
+                
+            })
+            video.addEventListener("error", (error) => {
+                logEvent(`error`, error) 
+            })
+            video.addEventListener("stalled", (event) => { logEvent(`stalled`, event) });
+            video.addEventListener("suspend", (event) => logEvent(`sus`, event));
+            video.addEventListener("*", (event) => logEvent(`all`, event));
+            video.addEventListener("abort", (event) => logEvent(`abrt`, event));
+
+            sourceBuffer.appendBuffer(response)
+            // video.addEventListener('seeking', seek);
+        },
+        start: contentStart,
+        end: contentEnd
+    })
+}
+
+function onTimeUpdate() {
+    fetchXhr({
+        url: songUrl,
+        callback: (result) =>{
+            const {
+                response = {},
+                contentLength = 0,
+                start = 0,
+                end = 0 
+            } = result ?? {}
+            console.log('fetched bytes: ', start, end);
+            bytesFetched += end - start + 1;
+
+            console.log(contentLength)
+            console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
+            segmentLength = Math.round(contentLength / totalSegments);
+
+            requestedSegments[0] = true;
+            video.addEventListener('timeupdate', checkBuffer);
+            video.addEventListener('canplay', function () {
+                segmentDuration = video.duration / totalSegments;
+                console.log("Play")
+                video.play();
+            });
+            video.addEventListener("timeupdate", (event) => {
+                
+            })
             video.addEventListener("error", (error) => {
                 logEvent(`error`, error) 
             })
@@ -156,6 +213,9 @@ function playAudio() {
                 end = 0 
             } = result ?? {}
             
+            console.log(contentLength)
+            console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
+            console.log(`play ${response.byteLength}`)
             play(response)
         },
         start: contentStart,
@@ -172,10 +232,21 @@ async function play(data) {
     source.start();
 }
 
+function mp4Box() {
+    var mp4boxfile = MP4Box.createFile();
+    mp4boxfile.onError = function(e) {};
+    mp4boxfile.onReady = function(info) {};
+    mp4boxfile.appendBuffer(data);
+    mp4boxfile.appendBuffer(data);
+    mp4boxfile.appendBuffer(data);
+    
+    mp4boxfile.flush();
+}
+
 function main() {
     setupAudioPlayer()
 
-    // playAudio()
+    playAudio()
 
     getSpotiCardData()
 }

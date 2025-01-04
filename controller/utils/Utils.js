@@ -1,4 +1,5 @@
 import { getErrorCard } from "../../card/ErrorCard.js";
+import { timeOffset } from "../../domain/model/Device.js";
 
 export const createStateRef = (stateMachine, stateRef) => {
     if (!stateRef)
@@ -90,6 +91,21 @@ export function calculateSegment(manifest) {
     return {
         initSegment: initSegment,
         contentSegments: contentSegments
+    }
+}
+
+export function calculateStartEndTime(initial = 0, mode) {
+    const offset = mode === "video" ? timeOffset.VIDEO : timeOffset.AUDIO
+        , timeStart = null !== (o = null == l ? void 0 : l.end) && void 0 !== o ? o : initial
+        , p = timeStart - initial
+
+    if (p > offset) return
+
+    const end = timeStart + (offset - p)
+
+    return {
+        start: timeStart,
+        end: end
     }
 }
 

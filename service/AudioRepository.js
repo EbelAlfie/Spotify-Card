@@ -45,18 +45,6 @@ export class AudioRepository {
         , range = `${audioRange.start}-${audioRange.end}`
         , expectedLength = audioRange.end + 1 - audioRange.start
 
-        // var xhr = new XMLHttpRequest
-        // xhr.open('GET', url)
-        
-        // xhr.setRequestHeader("Range", `bytes=${range}`);
-
-        // xhr.responseType = 'arraybuffer'
-        // xhr.onload = function () {
-        //     callback(xhr.response)
-        // }
-        
-        // xhr.send()
-
         const config = {
             method: "GET",
             url: audioUrl,

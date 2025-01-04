@@ -62,15 +62,15 @@ export async function getAudioBuffer(request, response) {
 
         const rangedSegments = getSegmentForRange(contentSegments)
 
-        const audioBuffer = await audioUseCase.loadAudioBuffer(cdnUrls.uri, initSegment)
+        const audioBuffer = await audioUseCase.loadAudioBuffer(cdnUrls.uri, contentSegments[0])
 
-        let buffer = Buffer.from(audioBuffer.data)
-        for(let i = 0; i < rangedSegments.length; i++) {
-            const bufferPerSegment = await audioUseCase.loadAudioBuffer(cdnUrls.uri, rangedSegments[i])
-            if (isError(cdnUrls, response, debug)) break ;
+        let buffer = audioBuffer.data ; new Buffer.from(new ArrayBuffer()) ;
+        // for(let i = 0; i < contentSegments.length; i++) {
+        //     const bufferPerSegment = await audioUseCase.loadAudioBuffer(cdnUrls.uri, contentSegments[i])
+        //     if (isError(cdnUrls, response, debug)) break ;
 
-            buffer = appendBuffer(buffer, bufferPerSegment.data)
-        }
+        //     buffer = appendBuffer(buffer, bufferPerSegment.data)
+        // }
 
         if (isError(audioBuffer, response, debug)) return
 
@@ -78,7 +78,7 @@ export async function getAudioBuffer(request, response) {
 
         response.status(206)
         response.set(audioBuffer.headers)
-        response.send(audioBuffer.data)
+        response.send(buffer)
     }
 
     socketService.onPlayerStateChanged = onPlayerStateChanged

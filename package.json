@@ -14,6 +14,7 @@
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "http-proxy-middleware": "^3.0.3"
+    "http-proxy-middleware": "^3.0.3",
+    "mp4box": "^0.4.8"
   }
 }
