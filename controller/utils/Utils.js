@@ -101,6 +101,17 @@ export function getSegmentForRange(contentSegments, timeStart = 0, timeEnd = 12)
     return rangedSegments
 }
 
+export function decodePSSHKey(key) {
+    const decodedKey = atob(key)
+        ,decodedResult = new Uint8Array(decodedKey.length);
+    let keyLength = decodedKey.length
+    for (let i = 0; i < keyLength; i++)
+        decodedResult[i] = decodedKey.charCodeAt(i)
+
+    console.log(decodedResult)
+    return decodedResult
+}
+
 /** True if it is error */
 export function isError(error, response, debug) {
     if (error instanceof Error) {

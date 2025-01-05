@@ -38,6 +38,7 @@ export class AudioUseCase {
                 const encoderDelaySample = data.encoder_delay_samples ?? 0
                 const paddingSample = data.padding_samples ?? 0
                 const pssh = data.pssh ?? ""
+                const psshWidevine = data.pssh_widevine ?? ""
                 const indexRange = data.indexRange ?? []
                 
                 return {
@@ -48,6 +49,7 @@ export class AudioUseCase {
                     encoderDelaySample: encoderDelaySample,
                     paddingSample: paddingSample,
                     pssh: pssh,
+                    psshWidevine: psshWidevine,
                     indexRange: indexRange
                 }
             })
@@ -62,8 +64,6 @@ export class AudioUseCase {
             .then(response => {
                 const data = response?.data ?? {}
                 const headers = response?.headers ?? {}
-
-                console.log(data)
                 
                 return {
                     data: data,

@@ -60,33 +60,32 @@ export async function getAudioBuffer(request, response) {
             contentSegments: contentSegments
         } = calculateSegment(manifest)
 
-        const initBufferResponse = await audioUseCase.loadAudioBuffer(cdnUrls.uri, initSegment)
+        const initBufferResponse = 
+            await audioUseCase.loadAudioBuffer(cdnUrls.uri, initSegment)
 
         if (isError(initBufferResponse, response, debug)) return
 
         const initBuffer = initBufferResponse.data
-        let buffer = new Buffer.from(new ArrayBuffer())
+        let buffer = initBuffer
 
-        const bufferPerSegment = await audioUseCase.loadAudioBuffer(cdnUrls.uri, contentSegments[0])
-        
-        if (isError(cdnUrls, response, debug)) return ;
+        for(let i = 0; i < 5; i++) {
+            const bufferPerSegment = 
+                await audioUseCase.loadAudioBuffer(cdnUrls.uri, contentSegments[i])
+            if (isError(cdnUrls, response, debug)) return ;
+                        
+            const segmentBuffer = bufferPerSegment.data
             
-        buffer = new Buffer.from(appendBuffer(initBuffer, bufferPerSegment.data).buffer)
+            console.log(buffer)
 
-        // for(let i = 0; i < 1; i++) {
-        //     const bufferPerSegment = await audioUseCase.loadAudioBuffer(cdnUrls.uri, contentSegments[i])
-        //     if (isError(cdnUrls, response, debug)) break ;
-
-        //     const segmentBuffer = appendBuffer(initBuffer, bufferPerSegment.data)
-        //     buffer = Buffer.concat([buffer, segmentBuffer])
-        // }
+            buffer = appendBuffer(buffer, segmentBuffer)
+        }
 
         console.log(cdnUrls.uri)
         console.log(buffer)
 
         response.status(206)
         response.set(initBuffer.headers)
-        response.send(buffer)
+        response.send(new Buffer.from(buffer.buffer))
     }
 
     socketService.onPlayerStateChanged = onPlayerStateChanged
