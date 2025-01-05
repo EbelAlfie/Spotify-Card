@@ -94,21 +94,6 @@ export function calculateSegment(manifest) {
     }
 }
 
-export function calculateStartEndTime(initial = 0, mode) {
-    const offset = mode === "video" ? timeOffset.VIDEO : timeOffset.AUDIO
-        , timeStart = null !== (o = null == l ? void 0 : l.end) && void 0 !== o ? o : initial
-        , p = timeStart - initial
-
-    if (p > offset) return
-
-    const end = timeStart + (offset - p)
-
-    return {
-        start: timeStart,
-        end: end
-    }
-}
-
 export function getSegmentForRange(contentSegments, timeStart = 0, timeEnd = 12) {
     const rangedSegments = [];
     for (const item of contentSegments)
@@ -127,9 +112,9 @@ export function isError(error, response, debug) {
     return false
 }
 
-export function appendBuffer(source, target) {
-    const newBuffer = new Uint8Array(source.byteLength + target.byteLength);
-    newBuffer.set(new Uint8Array(source), 0),
-    newBuffer.set(new Uint8Array(target), source.byteLength)
+export function appendBuffer(initBuffer, buffer) {
+    const newBuffer = new Uint8Array(initBuffer.byteLength + buffer.byteLength);
+    newBuffer.set(new Uint8Array(initBuffer), 0)
+    newBuffer.set(new Uint8Array(buffer), initBuffer.byteLength)
     return newBuffer
 }

@@ -1,3 +1,4 @@
+import { appendBuffer } from "../controller/utils/Utils.js"
 import { MediaSourceManager } from "./MediaSourceManager.js"
 import { fetchXhr, logEvent } from "./Utils.js"
 
@@ -9,7 +10,7 @@ const track = document.getElementById("track-status")
 
 var mimeCodec = 'audio/mp4; codecs="mp4a.40.2"';
 var video = document.querySelector('video');
-const songUrl = //"http://localhost:3030/audio"
+const songUrl = "http://localhost:3030/audio"
     "https://audio-ak.spotifycdn.com/audio/c361cbd42012ce4095a6b44e120afce1c092b54b?__token__=exp=1736086303~hmac=856ea4094a65bd8f0ef4f883e9bf6bbba474318d411206e93c0c02d0f10c873a"
 
 const contentStart = 1808
@@ -180,7 +181,9 @@ function checkBuffer(_) {
                     console.log('fetched bytes: ', start, end);
                     bytesFetched += end - start + 1;
 
-                    sourceBuffer.appendBuffer(response)
+                    let buffer =  initSegment ? appendBuffer(initSegment, response).buffer :  response
+
+                    sourceBuffer.appendBuffer(buffer)
                 },
                 start : bytesFetched,
                 end : bytesFetched + segmentLength
@@ -216,7 +219,9 @@ function playAudio() {
             console.log(contentLength)
             console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
             console.log(`play ${response.byteLength}`)
-            play(response)
+
+            let audio =  initSegment ? appendBuffer(initSegment, response).buffer :  response 
+            play(audio)
         },
         start: contentStart,
         end: contentEnd
@@ -232,23 +237,33 @@ async function play(data) {
     source.start();
 }
 
-function mp4Box() {
-    var mp4boxfile = MP4Box.createFile();
-    mp4boxfile.onError = function(e) {};
-    mp4boxfile.onReady = function(info) {};
-    mp4boxfile.appendBuffer(data);
-    mp4boxfile.appendBuffer(data);
-    mp4boxfile.appendBuffer(data);
-    
-    mp4boxfile.flush();
+let initSegment = null
+function getInitSegment(callback) {
+    fetchXhr({
+        url: songUrl,
+        callback: (result) =>{
+            const {
+                response = {},
+                contentLength = 0,
+                start = 0,
+                end = 0 
+            } = result ?? {}
+
+            initSegment = response
+
+            main()
+        },
+        start: 0,
+        end: 1807
+    })
 }
 
 function main() {
-    setupAudioPlayer()
+    getSpotiCardData()
+
+    // setupAudioPlayer()
 
     playAudio()
-
-    getSpotiCardData()
 }
 
 main()
