@@ -95,10 +95,31 @@ export function calculateSegment(manifest) {
 }
 
 export function getSegmentForRange(contentSegments, timeStart = 0, timeEnd = 12) {
+    var n;
     const rangedSegments = [];
-    for (const item of contentSegments)
-        item.timeStart <= timeEnd && item.timeEnd >= timeStart && rangedSegments.push(item);
+    if (null === (n = contentSegments) || void 0 === n ? void 0 : n.length)
+        for (const segment of contentSegments)
+            segment.timeStart <= timeEnd && segment.timeEnd >= timeStart && rangedSegments.push(segment);
     return rangedSegments
+}
+
+export function filterBufferedSegment(rangedSegments) {
+    const e = this._getBufferedTimeRanges();
+    let filteredSegments = [];
+    if (null == e ? void 0 : e.length)
+        t: for (const o of t) {
+            let t = e.length;
+            for (; t--; ) {
+                const n = e.start(t)
+                    , a = e.end(t);
+                if (n <= o.timeStart && (a >= o.timeEnd || a + 1e-5 > o.timeEnd))
+                    continue t
+            }
+            filteredSegments.push(o)
+        }
+    else
+        filteredSegments = rangedSegments;
+    return filteredSegments
 }
 
 export function decodePSSHKey(key) {
@@ -108,7 +129,6 @@ export function decodePSSHKey(key) {
     for (let i = 0; i < keyLength; i++)
         decodedResult[i] = decodedKey.charCodeAt(i)
 
-    console.log(decodedResult)
     return decodedResult
 }
 

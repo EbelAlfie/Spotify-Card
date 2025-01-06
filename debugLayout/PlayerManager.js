@@ -65,7 +65,7 @@ export async function getAudioSegment(contentSegment, isInitSegment = false) {
             await audioUseCase.loadAudioBuffer(cdnUrls.uri, contentSegment)
             
         return {
-            buffer : bufferPerSegment.buffer,
+            buffer : bufferPerSegment.data,
             headers : bufferPerSegment.headers,
             metadata : bufferPerSegment.metadata
         }

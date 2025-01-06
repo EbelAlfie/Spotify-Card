@@ -1,4 +1,7 @@
-import { appendBuffer, decodePSSHKey } from "../controller/utils/Utils.js";
+import { userCred } from "../config.js";
+import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../controller/utils/Utils.js";
+import { timeOffset } from "../domain/model/Device.js";
+import { EmeConfig, requestLicense } from "./EmeConfig.js";
 import { contentSegments, getAudioSegment } from "./PlayerManager.js";
 import { fetchXhr, logEvent } from "./Utils.js"
 
@@ -31,9 +34,12 @@ export function setupAudioPlayer() {
         mediaSource.addEventListener("sourceopen", onSourceOpen);
         mediaSource.addEventListener("sourceclose", onSourceClose);
         video.src = window.URL.createObjectURL(mediaSource);
+
+        video.playbackRate = 1
         initializeEME(
             video, 
             mimeCodec, 
+            userCred.emeKey
         )
     } else {
         console.log("unsupported mimetype/ codec")
@@ -47,53 +53,92 @@ function onSourceClose(error) {
 async function onSourceOpen(_) {
     let mediaSource = this
     sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
+
+    video.addEventListener('canplay', () => {
+        console.log("Play")
+        video.play();
+    });
+
+    video.addEventListener("playing", () => {
+        console.log(`video time ${video.currentTime}`)
+    })
     
-    try {
-        const initialSegment = await getAudioSegment(contentSegments[0], true)
-        const {
-            buffer = {},
-            headers = {},
-            metadata = {}
-        } = initialSegment ?? {}
-        const contentLength = headers["content-length"]
-        
-        console.log(contentLength)
-        console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
+    video.addEventListener("abort", () => {
+        console.log(`video abort ${video.currentTime}`)
+    })
 
-        video.addEventListener('timeupdate', checkBuffer);
-        video.addEventListener('canplay', function () {
-            segmentDuration = video.duration / totalSegments;
-            console.log("Play")
-            video.play();
-        });
-
-        sourceBuffer.appendBuffer(buffer)
-        
-    } catch (error) {
-        console.log("error " + error)
-    }
+    video.addEventListener('timeupdate', update);
+    
+    await update()
 }
 
-async function checkBuffer() {
-    try {
-        const segment = await getAudioSegment(contentSegments.shift())
-        const {
-            buffer = {},
-            headers = {},
-            metadata = {}
-        } = segment ?? {}
+var shouldInitSegment = true
+async function update() {
+    const time = calculateTime(video.currentTime)
 
-        sourceBuffer.appendBuffer(buffer)
-    } catch (error) {
-        console.log(`error ${error}`)
+    if (!time) return 
+
+    const {
+        timeStart,
+        timeEnd
+    } = time
+
+    const rangedSegments = getSegmentForRange(contentSegments, timeStart, timeEnd)
+    
+    console.log("Segments ")
+    console.log(rangedSegments)
+    console.log(`current video time ${video.currentTime}`)
+    
+    for (const item of rangedSegments) {
+        console.log(item)
+        try {
+            const segment = await getAudioSegment(item, shouldInitSegment)
+
+            if (shouldInitSegment) 
+                shouldInitSegment = false
+
+            const {
+                buffer = {},
+                headers = {},
+                metadata = {}
+            } = segment ?? {}
+            const contentLength = headers["content-length"]
+            
+            console.log(`content Length ${contentLength}`)
+            console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
+    
+            sourceBuffer.appendBuffer(buffer)
+            
+        } catch (error) {
+            console.log("error " + error)
+        }
     }
+    console.log("\n\n")
 }
 
-function onAudioSegmentFetched(response) {}
+function calculateTime(currentTime = 0) {
+    const offset = timeOffset.AUDIO
+        , timeStart = currentTime
+        , p = timeStart - currentTime;
+
+        console.log("timeStart")
+        console.log(timeStart)
+        console.log(p > offset)
+    if (p > offset)
+        return null;
+    const timeEnd = timeStart + (offset - p)
+    console.log("timeEnd")
+    console.log(timeEnd)
+    return {
+        timeStart : timeStart,
+        timeEnd : timeEnd
+    }
+}
 
 /** EME */
+let KEY = null
 export function initializeEME(video, mime, key) {
-	const KEY = decodePSSHKey(key);
+	KEY = decodePSSHKey(key);
 
 	var configMp4Mime = [{
         label: "audio-flac-sw-crypto",
@@ -135,10 +180,8 @@ export function initializeEME(video, mime, key) {
         persistentState: "optional",
         sessionTypes: ["temporary"]
 	}];
-	configMp4Mime[0].videoCapabilities[0].contentType = mime;
 
 	var WIDEVINE_KEY_SYSTEM = 'com.widevine.alpha';
-	var CLEARKEY_KEY_SYSTEM = 'org.w3.clearkey';
 
 	video.addEventListener('encrypted', handleEncrypted, false);
 
@@ -158,17 +201,33 @@ export function initializeEME(video, mime, key) {
 }
 
 function handleEncrypted(event) {
-	console.log("Encrypted event", event);
-	//return;
+	//console.log("Encrypted event", event);
 	video = event.target;
 	let session = video.mediaKeys.createSession();
+    session.addEventListener("keystatuseschange", (msg) => console.log(msg));
 	session.addEventListener('message', handleMessage, false);
-	session.generateRequest(event.initDataType, event.initData).catch(
+	session.generateRequest(EmeConfig.initType, KEY.buffer).catch(
 	  function(error) {
 	    console.error('Failed to generate a license request', error);
 	  }
 	);
 }
+
+async function handleMessage(event) {
+  console.log(event.message)
+
+  let message = event.message
+  let session = event.target;
+
+  const license = await requestLicense(message)
+
+  session.update(license.data).catch(
+    function(error) {
+      console.error('Failed to update the session', error);
+    }
+  );
+}
+
 
 export function playAudio() {
     fetchXhr({
