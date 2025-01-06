@@ -64,9 +64,23 @@ async function onSourceOpen(_) {
         console.log(`video abort ${video.currentTime}`)
     })
 
-    video.addEventListener('timeupdate', update);
+    video.addEventListener('timeupdate', updateV2);
 
-    await update()
+    await updateV2()
+}
+
+async function updateV2() {
+    axios.request({
+        method: "GET",
+        url: songUrl,
+        responseType: "arraybuffer",
+        maxBodyLength: Infinity,
+        
+    }).then(response => {
+        const audio = response.data
+
+        sourceBuffer.appendBuffer(buffer.Buffer.from(audio))
+    })
 }
 
 var shouldInitSegment = true
@@ -99,9 +113,6 @@ async function update() {
                 metadata = {}
             } = segment ?? {}
             const contentLength = headers["content-length"]
-            
-            console.log(`content Length ${contentLength}`)
-            console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
     
             sourceBuffer.appendBuffer(buffer)
             
@@ -118,9 +129,6 @@ function calculateTime(currentTime = 0, startTime) {
         , timeStart = null !== (o = null == startTime ? void 0 : startTime.end) && void 0 !== o ? o : currentTime
         , p = timeStart - currentTime;
 
-        console.log("timeStart")
-        console.log(timeStart)
-        console.log(p > offset)
     if (p > offset)
         return null;
     const timeEnd = timeStart + (offset - p)

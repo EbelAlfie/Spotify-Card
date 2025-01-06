@@ -1,8 +1,6 @@
-import { appendBuffer } from "../controller/utils/Utils.js"
 import { getSpotiCardData } from "./Card.js";
 import { playAudio, setupAudioPlayer } from "./Player.js";
 import { getAudioData } from "./PlayerManager.js";
-import { fetchXhr, logEvent } from "./Utils.js"
 
 async function audioMain() {
     // playAudio()
@@ -13,9 +11,10 @@ async function audioMain() {
 }
 
 function main() {
-    // getSpotifyCard()
-    // getSpotiCardData()
-    audioMain()
+    getSpotiCardData()
+    
+    setupAudioPlayer()
+    //audioMain()
 }
 
 main()
