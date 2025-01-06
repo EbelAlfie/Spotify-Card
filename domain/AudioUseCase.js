@@ -64,10 +64,12 @@ export class AudioUseCase {
             .then(response => {
                 const data = response?.data ?? {}
                 const headers = response?.headers ?? {}
+                const metadata = response?.metadata ?? {}
                 
                 return {
                     data: data,
-                    headers: headers
+                    headers: headers,
+                    metadata: metadata
                 }
             })
             .catch(error => {

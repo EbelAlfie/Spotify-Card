@@ -75,9 +75,10 @@ export async function getAudioBuffer(request, response) {
                         
             const segmentBuffer = bufferPerSegment.data
             
-            console.log(buffer)
+            console.log(`initial length ${buffer.byteLength}`)
+            console.log(`segment length ${segmentBuffer.byteLength}`)
 
-            buffer = appendBuffer(buffer, segmentBuffer)
+            buffer = appendBuffer(buffer, segmentBuffer, 0, buffer.byteLength)
         }
 
         console.log(cdnUrls.uri)

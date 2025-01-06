@@ -123,9 +123,9 @@ export function isError(error, response, debug) {
     return false
 }
 
-export function appendBuffer(initBuffer, buffer) {
-    const newBuffer = new Uint8Array(initBuffer.byteLength + buffer.byteLength);
-    newBuffer.set(new Uint8Array(initBuffer), 0)
-    newBuffer.set(new Uint8Array(buffer), initBuffer.byteLength)
+export function appendBuffer(initBuffer, buffer, initLength, bufferLength) {
+    const newBuffer = new Uint8Array(initBuffer.byteLength + buffer.byteLength)
+    newBuffer.set(new Uint8Array(initBuffer), initLength)
+    newBuffer.set(new Uint8Array(buffer), bufferLength)
     return newBuffer
 }

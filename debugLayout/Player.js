@@ -1,4 +1,5 @@
 import { appendBuffer, decodePSSHKey } from "../controller/utils/Utils.js";
+import { contentSegments, getAudioSegment } from "./PlayerManager.js";
 import { fetchXhr, logEvent } from "./Utils.js"
 
 let mimeCodec = 'audio/mp4; codecs="mp4a.40.2"';
@@ -33,63 +34,10 @@ export function setupAudioPlayer() {
         initializeEME(
             video, 
             mimeCodec, 
-            ""
         )
     } else {
         console.log("unsupported mimetype/ codec")
     }
-}
-
-export function playAudio() {
-    fetchXhr({
-        url: songUrl,
-        callback: (result) =>{
-            const {
-                response = {},
-                contentLength = 0,
-                start = 0,
-                end = 0 
-            } = result ?? {}
-            
-            console.log(contentLength)
-            console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
-            console.log(`play ${response.byteLength}`)
-
-            let audio =  initSegment ? appendBuffer(initSegment, response).buffer :  response 
-            play(audio)
-        },
-        start: contentStart,
-        end: contentEnd
-    })
-}
-
-async function play(data) {
-    const context = new window.AudioContext;
-    const buffer = await context.decodeAudioData(data);
-    const source = context.createBufferSource();
-    source.buffer = buffer;
-    source.connect(context.destination);
-    source.start();
-}
-
-export function getInitSegment(callback) {
-    fetchXhr({
-        url: songUrl,
-        callback: (result) =>{
-            const {
-                response = {},
-                contentLength = 0,
-                start = 0,
-                end = 0 
-            } = result ?? {}
-
-            initSegment = response
-
-            callback()
-        },
-        start: 0,
-        end: 1807
-    })
 }
 
 function onSourceClose(error) {
@@ -98,49 +46,53 @@ function onSourceClose(error) {
 
 async function onSourceOpen(_) {
     let mediaSource = this
-
     sourceBuffer = mediaSource.addSourceBuffer(mimeCodec);
     
-    fetchXhr({
-        url: songUrl,
-        callback: (result) =>{
-            const {
-                response = {},
-                contentLength = 0,
-                start = 0,
-                end = 0 
-            } = result ?? {}
-            console.log('fetched bytes: ', start, end);
-            bytesFetched += end - start + 1;
+    try {
+        const initialSegment = await getAudioSegment(contentSegments[0], true)
+        const {
+            buffer = {},
+            headers = {},
+            metadata = {}
+        } = initialSegment ?? {}
+        const contentLength = headers["content-length"]
+        
+        console.log(contentLength)
+        console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
 
-            console.log(contentLength)
-            console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
-            segmentLength = Math.round(contentLength / totalSegments);
+        video.addEventListener('timeupdate', checkBuffer);
+        video.addEventListener('canplay', function () {
+            segmentDuration = video.duration / totalSegments;
+            console.log("Play")
+            video.play();
+        });
 
-            requestedSegments[0] = true;
-            // video.addEventListener('timeupdate', checkBuffer);
-            video.addEventListener('canplay', function () {
-                segmentDuration = video.duration / totalSegments;
-                console.log("Play")
-                video.play();
-            });
-            video.addEventListener("error", (error) => {
-                logEvent(`error`, error) 
-            })
-            video.addEventListener("stalled", (event) => { logEvent(`stalled`, event) });
-            video.addEventListener("suspend", (event) => logEvent(`sus`, event));
-            video.addEventListener("*", (event) => logEvent(`all`, event));
-            video.addEventListener("abort", (event) => logEvent(`abrt`, event));
-
-            sourceBuffer.appendBuffer(response)
-            // video.addEventListener('seeking', seek);
-        },
-        start: contentStart,
-        end: contentEnd
-    })
+        sourceBuffer.appendBuffer(buffer)
+        
+    } catch (error) {
+        console.log("error " + error)
+    }
 }
 
-function initializeEME(video, mime, key) {
+async function checkBuffer() {
+    try {
+        const segment = await getAudioSegment(contentSegments.shift())
+        const {
+            buffer = {},
+            headers = {},
+            metadata = {}
+        } = segment ?? {}
+
+        sourceBuffer.appendBuffer(buffer)
+    } catch (error) {
+        console.log(`error ${error}`)
+    }
+}
+
+function onAudioSegmentFetched(response) {}
+
+/** EME */
+export function initializeEME(video, mime, key) {
 	const KEY = decodePSSHKey(key);
 
 	var configMp4Mime = [{
@@ -216,4 +168,36 @@ function handleEncrypted(event) {
 	    console.error('Failed to generate a license request', error);
 	  }
 	);
+}
+
+export function playAudio() {
+    fetchXhr({
+        url: songUrl,
+        callback: (result) =>{
+            const {
+                response = {},
+                contentLength = 0,
+                start = 0,
+                end = 0 
+            } = result ?? {}
+            
+            console.log(contentLength)
+            console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
+            console.log(`play ${response.byteLength}`)
+
+            let audio =  initSegment ? appendBuffer(initSegment, response).buffer :  response 
+            play(audio)
+        },
+        start: contentStart,
+        end: contentEnd
+    })
+}
+
+async function play(data) {
+    const context = new window.AudioContext;
+    const buffer = await context.decodeAudioData(data);
+    const source = context.createBufferSource();
+    source.buffer = buffer;
+    source.connect(context.destination);
+    source.start();
 }

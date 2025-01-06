@@ -45,6 +45,10 @@ export class AudioRepository {
         , range = `${audioRange.start}-${audioRange.end}`
         , expectedLength = audioRange.end + 1 - audioRange.start
 
+        const metadata = {
+            audioRange: audioRange
+        }
+
         const config = {
             method: "GET",
             url: audioUrl,
@@ -58,5 +62,11 @@ export class AudioRepository {
         return httpHandler
             .init(config)
             .request()
+            .then(response => {
+                return {
+                    ...response,
+                    metadata: metadata
+                }
+            })
     }
 }
