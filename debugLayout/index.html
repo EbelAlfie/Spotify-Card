@@ -3,18 +3,12 @@
     <head>
         <script src="https://bundle.run/buffer@6.0.3"></script>
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
-        <script type="importmap">
-            {
-                "imports": {
-                    "axios": "https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js?module"
-                }
-            }
-        </script>
         <script type="module" src="./index.js"></script> 
     </head>
 
     <body>
-        <video controls></video>
+        <video controls download></video>
+        <img src="http://localhost:3030/last-track" alt="SpotiCard">
         <svg 
             id="card-container"
             height="200" 

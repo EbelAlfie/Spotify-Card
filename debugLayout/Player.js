@@ -1,9 +1,6 @@
 import { userCred } from "../config.js";
 import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../controller/utils/Utils.js";
-import { timeOffset } from "../domain/model/Device.js";
 import { EmeConfig, requestLicense } from "./EmeConfig.js";
-import { contentSegments, getAudioSegment } from "./PlayerManager.js";
-import { fetchXhr, logEvent } from "./Utils.js"
 
 let mimeCodec = 'audio/mp4; codecs="mp4a.40.2"';
 let video = document.querySelector('video');
@@ -13,13 +10,6 @@ let initSegment = null
 
 const songUrl = "http://localhost:3030/audio"
     "https://audio-ak.spotifycdn.com/audio/c361cbd42012ce4095a6b44e120afce1c092b54b?__token__=exp=1736086303~hmac=856ea4094a65bd8f0ef4f883e9bf6bbba474318d411206e93c0c02d0f10c873a"
-
-var totalSegments = 10;
-var requestedSegments = [];
-for (var i = 0; i < totalSegments; ++i) requestedSegments[i] = false;
-
-const contentStart = 1808
-const contentEnd = 164941
 
 export function setupAudioPlayer() {    
     if ('MediaSource' in window && MediaSource.isTypeSupported(mimeCodec)) {
@@ -54,17 +44,7 @@ async function onSourceOpen(_) {
     video.addEventListener('canplay', () => {
         console.log("Play")
         video.play();
-    });
-
-    video.addEventListener("playing", () => {
-        console.log(`video time ${video.currentTime}`)
     })
-    
-    video.addEventListener("abort", () => {
-        console.log(`video abort ${video.currentTime}`)
-    })
-
-    video.addEventListener('timeupdate', updateV2);
 
     await updateV2()
 }
@@ -83,81 +63,6 @@ async function updateV2() {
     })
 }
 
-var shouldInitSegment = true
-async function update() {
-    const time = calculateTime(video.currentTime, getTimeRange(mediaSource, video.currentTime))
-
-    if (!time) return 
-
-    const {
-        timeStart,
-        timeEnd
-    } = time
-
-    const rangedSegments = getSegmentForRange(contentSegments, timeStart, timeEnd)
-    
-    console.log("Segments ")
-    console.log(rangedSegments)
-    console.log(`current video time ${video.currentTime}`)
-    
-    for (const item of contentSegments) {
-        try {
-            const segment = await getAudioSegment(item, shouldInitSegment)
-
-            if (shouldInitSegment) 
-                shouldInitSegment = false
-
-            const {
-                buffer = {},
-                headers = {},
-                metadata = {}
-            } = segment ?? {}
-            const contentLength = headers["content-length"]
-    
-            sourceBuffer.appendBuffer(buffer)
-            
-        } catch (error) {
-            console.log("error " + error)
-        }
-    }
-    console.log("\n\n")
-}
-
-function calculateTime(currentTime = 0, startTime) {
-    var o
-    const offset = timeOffset.AUDIO
-        , timeStart = null !== (o = null == startTime ? void 0 : startTime.end) && void 0 !== o ? o : currentTime
-        , p = timeStart - currentTime;
-
-    if (p > offset)
-        return null;
-    const timeEnd = timeStart + (offset - p)
-    console.log("timeEnd")
-    console.log(timeEnd)
-    return {
-        timeStart : timeStart,
-        timeEnd : timeEnd
-    }
-}
-
-function getTimeRange(mediaSource, currentTime) {
-    var n;
-    n = mediaSource.sourceBuffers[mediaSource.sourceBuffers.length - 1]
-    const timeRange = n?.buffered ?? 0;
-
-    if (timeRange)
-        for (let a = 0; a < timeRange.length; a++) {
-            const t = timeRange.start(a)
-                , n = timeRange.end(a);
-            if (t <= currentTime && currentTime <= n)
-                return {
-                    start: t,
-                    end: n
-                }
-        }
-    return null
-}
-
 /** EME */
 let KEY = null
 export function initializeEME(video, mime, key) {
@@ -166,7 +71,6 @@ export function initializeEME(video, mime, key) {
 	var configMp4Mime = [{
         label: "audio-flac-sw-crypto",
 		initDataTypes: ["cenc"],
-		//"audioCapabilities": [{ "contentType": 'audio/mp4;codecs="mp4a.40.2"', robustness: 'SW_SECURE_CRYPTO' }],
         audioCapabilities: [
             {
                 "contentType": "audio/mp4; codecs=\"flac\"",
@@ -224,7 +128,6 @@ export function initializeEME(video, mime, key) {
 }
 
 function handleEncrypted(event) {
-	//console.log("Encrypted event", event);
 	video = event.target;
 	let session = video.mediaKeys.createSession();
     session.addEventListener("keystatuseschange", (msg) => console.log(msg));
