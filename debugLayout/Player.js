@@ -15,9 +15,6 @@ const songUrl = "http://localhost:3030/audio"
     "https://audio-ak.spotifycdn.com/audio/c361cbd42012ce4095a6b44e120afce1c092b54b?__token__=exp=1736086303~hmac=856ea4094a65bd8f0ef4f883e9bf6bbba474318d411206e93c0c02d0f10c873a"
 
 var totalSegments = 10;
-var segmentLength = 0;
-var segmentDuration = 0;
-var bytesFetched = 0;
 var requestedSegments = [];
 for (var i = 0; i < totalSegments; ++i) requestedSegments[i] = false;
 
@@ -68,13 +65,13 @@ async function onSourceOpen(_) {
     })
 
     video.addEventListener('timeupdate', update);
-    
+
     await update()
 }
 
 var shouldInitSegment = true
 async function update() {
-    const time = calculateTime(video.currentTime)
+    const time = calculateTime(video.currentTime, getTimeRange(mediaSource, video.currentTime))
 
     if (!time) return 
 
@@ -89,8 +86,7 @@ async function update() {
     console.log(rangedSegments)
     console.log(`current video time ${video.currentTime}`)
     
-    for (const item of rangedSegments) {
-        console.log(item)
+    for (const item of contentSegments) {
         try {
             const segment = await getAudioSegment(item, shouldInitSegment)
 
@@ -116,9 +112,10 @@ async function update() {
     console.log("\n\n")
 }
 
-function calculateTime(currentTime = 0) {
+function calculateTime(currentTime = 0, startTime) {
+    var o
     const offset = timeOffset.AUDIO
-        , timeStart = currentTime
+        , timeStart = null !== (o = null == startTime ? void 0 : startTime.end) && void 0 !== o ? o : currentTime
         , p = timeStart - currentTime;
 
         console.log("timeStart")
@@ -133,6 +130,24 @@ function calculateTime(currentTime = 0) {
         timeStart : timeStart,
         timeEnd : timeEnd
     }
+}
+
+function getTimeRange(mediaSource, currentTime) {
+    var n;
+    n = mediaSource.sourceBuffers[mediaSource.sourceBuffers.length - 1]
+    const timeRange = n?.buffered ?? 0;
+
+    if (timeRange)
+        for (let a = 0; a < timeRange.length; a++) {
+            const t = timeRange.start(a)
+                , n = timeRange.end(a);
+            if (t <= currentTime && currentTime <= n)
+                return {
+                    start: t,
+                    end: n
+                }
+        }
+    return null
 }
 
 /** EME */
