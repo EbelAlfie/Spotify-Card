@@ -6,6 +6,7 @@ import { AuthRoute } from "./route/Auth.js"
 import { createProxyMiddleware } from "http-proxy-middleware"
 import { Audio } from "./route/Audio.js"
 import { License } from "./route/License.js"
+import { apiConfig } from "./config.js"
 
 export const app = express()
 
@@ -20,9 +21,8 @@ app.post(License.Route, express.raw({ type: "application/octet-stream" }), Licen
 // app.use(AuthRoute.Route, AuthRoute.Controller())
 
 console.log("Starting server...")
-const port = "3030"
-app.listen(port, () => {
-    console.log(`Server started at ${port}`)
+app.listen(apiConfig.port, () => {
+    console.log(`Server started at ${apiConfig.port}`)
 })
 
 // export const handler = ServerlessHttp(app)

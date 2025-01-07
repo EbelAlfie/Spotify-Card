@@ -19,9 +19,6 @@ export const getErrorCard = (message) => {
             xmlns:xlink="http://www.w3.org/1999/xlink"
         > 
             <defs>
-                <script>
-                    setInterval(() => { location.reload() }, 60000) ;
-                </script>
                 <style>
                     .warning-text{
                         fill: #ffffff;

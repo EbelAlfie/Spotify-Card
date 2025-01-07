@@ -1,16 +1,12 @@
-import { getErrorCard } from "../card/ErrorCard.js"
-import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
 import { AudioUseCase } from "../domain/AudioUseCase.js"
 import { DeviceUseCase } from "../domain/DeviceUseCase.js"
-import { socketService, SocketService } from "../domain/SocketService.js"
+import { socketService } from "../domain/SocketService.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
-import { TrackUseCase } from "../domain/TrackUseCase.js"
 import { httpHandler } from "../service/apiUtil/HttpHandler.js"
 import { AudioRepository } from "../service/AudioRepository.js"
 import { DeviceRepository } from "../service/DeviceRepository.js"
 import { TokenRepository } from "../service/TokenRepository.js"
-import { TrackRepository } from "../service/TrackRepository.js"
-import { appendBuffer, calculateSegment, getSegmentForRange, isError, parseTrack } from "./utils/Utils.js"
+import { appendBuffer, calculateSegment, isError, parseTrack } from "./utils/Utils.js"
 
 export async function getAudioBuffer(request, response) {
     const {

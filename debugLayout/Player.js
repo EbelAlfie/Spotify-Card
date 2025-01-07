@@ -1,7 +1,7 @@
-import { userCred } from "../config.js";
+import { apiConfig, userCred } from "../config.js";
 import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../controller/utils/Utils.js";
 import { EmeConfig } from "../domain/model/EmeConfig.js";
-import { mimeCodec, songUrl, video } from "./global.js";
+import { mimeCodec, path, songUrl, video } from "./global.js";
 
 let mediaSource = null
 let sourceBuffer = null
@@ -146,7 +146,7 @@ async function handleMessage(event) {
     method: "POST",
     responseType: "arraybuffer",
     maxBodyLength: Infinity,
-    url: "http://localhost:3030/license",
+    url: `${apiConfig.baseUrl}${path.license}`,
     headers: {
         "Content-Type": "application/octet-stream",
         "Accept": "application/json, text/plain, */*"
