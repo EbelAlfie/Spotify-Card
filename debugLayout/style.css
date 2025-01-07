@@ -1,5 +1,7 @@
 body {
-    background-color: rgb(22, 42, 83);
+    background: linear-gradient(-45deg, #4d76c4, #23a6d5, #e73c7e, #23d5ab);
+	background-size: 300% 300%;
+	animation: gradient 20s ease infinite;
 }
 
 .container {
@@ -14,34 +16,10 @@ audio {
 
 @keyframes
 gradient {
-    0%, 100% {
-
-    }
-    10% {
-
-    }
-    20% {
-
-    }
-    30% {
-
-    }
-    40% {
-
-    }
-    50% {
-
-    }
-    60% {
-
-    }
-    70% {
-        
-    }
-    80% {
-
-    }
-    90% {
-
-    }
+	0%, 100% {
+		background-position: 0% 50%;
+	}
+	50% {
+		background-position: 100% 50%;
+	}
 }
