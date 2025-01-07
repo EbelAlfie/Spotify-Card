@@ -1,14 +1,13 @@
 import express from "express"
 import cors from "cors"
-import ServerlessHttp from "serverless-http"
 import { SpotifyRoute } from "./route/Spotify.js"
 import { AuthRoute } from "./route/Auth.js"
 import { createProxyMiddleware } from "http-proxy-middleware"
 import { Audio } from "./route/Audio.js"
 import { License } from "./route/License.js"
-import { apiConfig } from "./config.js"
+import { apiConfig } from "./apiConfig.js"
 
-export const app = express()
+const app = express()
 
 app.use(cors())
 
@@ -26,5 +25,3 @@ console.log("Starting server...")
 app.listen(apiConfig.port, () => {
     console.log(`Server started at ${apiConfig.port}`)
 })
-
-export const handler = ServerlessHttp(app)
