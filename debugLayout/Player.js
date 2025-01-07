@@ -1,4 +1,5 @@
-import { apiConfig, userCred } from "../config.js";
+import { userCred } from "../config.js"
+import { apiConfig } from "./apiConfig.js"
 import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../controller/utils/Utils.js";
 import { EmeConfig } from "../domain/model/EmeConfig.js";
 import { mimeCodec, path, songUrl, video } from "./global.js";

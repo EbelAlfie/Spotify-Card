@@ -1,4 +1,4 @@
-import { apiConfig } from "../config.js";
+import { apiConfig } from "./apiConfig.js"
 import { path } from "./global.js";
 import { playAudio, setupAudioPlayer } from "./Player.js";
 
