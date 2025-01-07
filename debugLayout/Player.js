@@ -1,17 +1,13 @@
 import { userCred } from "../config.js";
 import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../controller/utils/Utils.js";
 import { EmeConfig } from "../domain/model/EmeConfig.js";
+import { mimeCodec, songUrl, video } from "./global.js";
 
-let mimeCodec = 'audio/mp4; codecs="mp4a.40.2"';
-let video = document.querySelector('audio');
 let mediaSource = null
 let sourceBuffer = null
 let initSegment = null
 
 let psshKey = ""
-
-const songUrl = "http://localhost:3030/audio"
-    "https://audio-ak.spotifycdn.com/audio/c361cbd42012ce4095a6b44e120afce1c092b54b?__token__=exp=1736086303~hmac=856ea4094a65bd8f0ef4f883e9bf6bbba474318d411206e93c0c02d0f10c873a"
 
 export function setupAudioPlayer() {    
     if ('MediaSource' in window && MediaSource.isTypeSupported(mimeCodec)) {
@@ -130,7 +126,6 @@ export function initializeEME(video) {
 
 function handleEncrypted(event) {
     console.log(event)
-	video = event.target
 	let session = video.mediaKeys.createSession()
     session.addEventListener("keystatuseschange", (msg) => console.log(msg));
 	session.addEventListener('message', handleMessage, false);
