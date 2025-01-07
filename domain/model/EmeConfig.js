@@ -1,5 +1,3 @@
-import { userCred } from "../../config.js"
-
 export const EmeConfig = {
     initType: "cenc",
     keySystem : "com.widevine.alpha",
