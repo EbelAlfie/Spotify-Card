@@ -149,3 +149,18 @@ export function appendBuffer(initBuffer, buffer, initLength, bufferLength) {
     newBuffer.set(new Uint8Array(buffer), bufferLength)
     return newBuffer
 }
+
+export const readBodyAsBuffer = (req) => {
+    return new Promise((resolve, reject) => {
+      let body = []
+      req.on('data', chunk => {
+        body.push(chunk)
+      })
+      req.on('end', () => {
+        resolve(Buffer.concat(body))
+      })
+      req.on('error', err => {
+        reject(err)
+      })
+    })
+  }

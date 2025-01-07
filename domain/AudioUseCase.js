@@ -77,4 +77,19 @@ export class AudioUseCase {
                 return error
             })
     }
+
+    async fetchLicense(payload) {
+        return this.repository.fetchLicense(payload)
+            .then(response => { 
+                const data = response.data
+
+                console.log(response)
+
+                return data
+            })
+            .catch(error => {
+                console.log(error)
+                return error
+            })
+    }
 }

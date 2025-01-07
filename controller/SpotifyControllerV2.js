@@ -63,7 +63,7 @@ export async function getSpotifyCard(request, response) {
         const spotifyCard = getSpotifyPlayerCard(responseResult)
     
         response.status(200)
-        response.headers({
+        response.header({
             "Content-Type": "image/svg+xml"
         });
         response.send(debug ? responseResult : spotifyCard)

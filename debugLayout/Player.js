@@ -1,6 +1,6 @@
 import { userCred } from "../config.js";
 import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../controller/utils/Utils.js";
-import { EmeConfig, requestLicense } from "./EmeConfig.js";
+import { EmeConfig } from "../domain/model/EmeConfig.js";
 
 let mimeCodec = 'audio/mp4; codecs="mp4a.40.2"';
 let video = document.querySelector('video');
@@ -43,7 +43,7 @@ async function onSourceOpen(_) {
 
     video.addEventListener('canplay', () => {
         console.log("Play")
-        video.play();
+        // video.play();
     })
 
     await updateV2()
@@ -55,7 +55,6 @@ async function updateV2() {
         url: songUrl,
         responseType: "arraybuffer",
         maxBodyLength: Infinity,
-        
     }).then(response => {
         const audio = response.data
 
@@ -142,18 +141,31 @@ function handleEncrypted(event) {
 async function handleMessage(event) {
   console.log(event.message)
 
+  let session = event.target
   let message = event.message
-  let session = event.target;
 
-  const license = await requestLicense(message)
+  console.log(message)
 
-  session.update(license.data).catch(
+  const license = await axios.request({
+    method: "POST",
+    url: EmeConfig.license, //`http://localhost:3030/license`,
+    headers: {
+        "content-type": "application/octet-stream",
+        "accept": "application/octet-stream",
+        "authorization": `Bearer ${userCred.accessToken}`,
+        "client-token": userCred.clientToken
+    },
+    data: message
+  })
+
+  console.log(new buffer.Buffer.from(license.data))
+
+  session.update(new buffer.Buffer.from(license.data)).catch(
     function(error) {
       console.error('Failed to update the session', error);
     }
   );
 }
-
 
 export function playAudio() {
     fetchXhr({
