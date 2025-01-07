@@ -1,5 +1,3 @@
-import { getImage } from "./Utils.js";
-
 export const getSpotifyPlayerCard = (config) => {
     const {
         image = "", 
