@@ -1,6 +1,8 @@
+import { getImage } from "./Utils.js";
+
 export const getSpotifyPlayerCard = (config) => {
     const {
-        imageUrl = "", 
+        image = "", 
         songTitle = "", 
         artists = "", 
         audioUrl = "", 
@@ -19,7 +21,7 @@ export const getSpotifyPlayerCard = (config) => {
         height: 64 * cardScale,
         x: 10,
         y: 10,
-        url: imageUrl
+        src: image
     }
 
     const audioModifier = {
@@ -119,12 +121,6 @@ export const getSpotifyPlayerCard = (config) => {
     >
         <defs> 
             ${cardStyle}
-            <audio loop autoplay>
-                <source src="${audioModifier.url}" type="audio/mpeg" />
-            </audio>
-            <script>
-                setInterval(() => { location.reload() }, 120000) ;
-            </script>
         </defs>
         <rect 
             height="${cardModifier.height}" 
@@ -152,7 +148,7 @@ export const getSpotifyPlayerCard = (config) => {
             width="${imageModifier.width}" 
             x="${imageModifier.x}" 
             y="${imageModifier.y}" 
-            href="${imageModifier.url}" 
+            href="${imageModifier.src}" 
             alt="Track Cover"
             clip-path="inset(0% round 15px)"
         />

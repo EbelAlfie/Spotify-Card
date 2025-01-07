@@ -1,4 +1,5 @@
 import { getSpotifyPlayerCard } from "../card/SpotifyCard.js"
+import { getImage } from "../card/Utils.js"
 import { DeviceUseCase } from "../domain/DeviceUseCase.js"
 import { socketService, SocketService } from "../domain/SocketService.js"
 import { TokenUseCase } from "../domain/TokenUseCase.js"
@@ -54,7 +55,7 @@ export async function getSpotifyCard(request, response) {
         const image = track.images?.length > 0 ? track?.images[0]?.url : ""
     
         const responseResult = {
-                imageUrl: image, 
+                image: await getImage(image), 
                 songTitle: track.name, 
                 artists: track.artists?.map(item => item.name).join(", "),
                 audioUrl: track.previewUrl,
@@ -65,13 +66,10 @@ export async function getSpotifyCard(request, response) {
         response.status(200)
         response.header({
             "Content-Type": "image/svg+xml"
-        });
+        })
         response.send(debug ? responseResult : spotifyCard)
     }
-
-    // const socketService = new SocketService({
-    //     accessToken: accessToken.accessToken
-    // })
+    
     socketService.onConnectionCreated = onConnectionCreated
 
     socketService.authenticateWebSocket(accessToken.accessToken)

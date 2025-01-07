@@ -1,7 +1,12 @@
 import { playAudio, setupAudioPlayer } from "./Player.js";
 
+const img = document.getElementById("spotiCard")
+
 function main() {
-    setupAudioPlayer()
+    img.src = "http://localhost:3030/last-track"
+    img.onload = () => {
+        setupAudioPlayer()
+    }
 }
 
 main()

@@ -3,7 +3,7 @@ import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../controller/u
 import { EmeConfig } from "../domain/model/EmeConfig.js";
 
 let mimeCodec = 'audio/mp4; codecs="mp4a.40.2"';
-let video = document.querySelector('video');
+let video = document.querySelector('audio');
 let mediaSource = null
 let sourceBuffer = null
 let initSegment = null
@@ -41,7 +41,7 @@ async function onSourceOpen(_) {
 
     video.addEventListener('canplay', () => {
         console.log("Play")
-        // video.play();
+        video.play();
     })
 
     await updateV2()
@@ -146,7 +146,6 @@ async function handleMessage(event) {
 
   let session = event.target
   let message = event.message
-  console.log(message)
 
   const license = await axios.request({
     method: "POST",
