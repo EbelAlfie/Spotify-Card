@@ -81,11 +81,13 @@ export class AudioUseCase {
     async fetchLicense(payload) {
         return this.repository.fetchLicense(payload)
             .then(response => { 
-                const data = response.data
+                const data = response.data ?? {}
+                const header = response.headers ?? {}
 
-                console.log(response)
-
-                return data
+                return {
+                    data: data,
+                    header: header
+                }
             })
             .catch(error => {
                 console.log(error)

@@ -76,12 +76,16 @@ export class AudioRepository {
             method: "POST",
             responseType: "arraybuffer",
             maxBodyLength: Infinity,
-            url: EmeConfig.license,
-            headers: {},
+            url: "https://gew4-spclient.spotify.com/widevine-license/v1/audio/license",
+            headers: {
+                "Content-Type": "application/octet-stream",
+                "content-length": payload.length
+            },
             data: payload
         }
         return httpHandler
+            .init(config)
             .withAuthHeader()
-            .request(config)
+            .request()
     }
 }

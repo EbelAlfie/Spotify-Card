@@ -50,34 +50,6 @@ class HttpHandler {
         return this
     }
 
-    withBody(body) {
-        this.config["data"] = body
-        return this
-    }
-
-    withHeaders(headers) {
-        Object.assign(this.config["headers"], headers)
-        return this
-    }
-
-    withMethod(method) {
-        if (method != "GET" || method != "PUT" || method != "POST" || method != "DELETE") 
-            return 
-
-        this.config["method"] = method
-        return this
-    }
-
-    withMaxBodyLength(bodyLength) {
-        this.config["maxBodyLength"] = bodyLength ?? Infinity
-        return this
-    }
-
-    withUrl(url) {
-        this.config["url"] = url
-        return this
-    }
-
     async request() {
         axios.interceptors.response.use(
             response => response, 

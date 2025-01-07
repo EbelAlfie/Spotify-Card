@@ -15,7 +15,7 @@ app.get(SpotifyRoute.Route, SpotifyRoute.Controller)
 
 app.get(Audio.Route, Audio.Controller)
 
-app.post(License.Route, express.raw(), License.Controller)
+app.post(License.Route, express.raw({ type: "application/octet-stream" }), License.Controller)
 
 // app.use(AuthRoute.Route, AuthRoute.Controller())
 

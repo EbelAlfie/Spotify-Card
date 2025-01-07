@@ -8,6 +8,8 @@ let mediaSource = null
 let sourceBuffer = null
 let initSegment = null
 
+let psshKey = ""
+
 const songUrl = "http://localhost:3030/audio"
     "https://audio-ak.spotifycdn.com/audio/c361cbd42012ce4095a6b44e120afce1c092b54b?__token__=exp=1736086303~hmac=856ea4094a65bd8f0ef4f883e9bf6bbba474318d411206e93c0c02d0f10c873a"
 
@@ -20,14 +22,10 @@ export function setupAudioPlayer() {
         video.ms = mediaSource;
         mediaSource.addEventListener("sourceopen", onSourceOpen);
         mediaSource.addEventListener("sourceclose", onSourceClose);
-        video.src = window.URL.createObjectURL(mediaSource);
-
+        video.src = window.URL.createObjectURL(mediaSource)
         video.playbackRate = 1
-        initializeEME(
-            video, 
-            mimeCodec, 
-            userCred.emeKey
-        )
+
+        initializeEME(video)
     } else {
         console.log("unsupported mimetype/ codec")
     }
@@ -53,20 +51,24 @@ async function updateV2() {
     axios.request({
         method: "GET",
         url: songUrl,
-        responseType: "arraybuffer",
         maxBodyLength: Infinity,
     }).then(response => {
-        const audio = response.data
+        const {
+            audioBuffer = {},
+            pssh = ""
+        } = response.data ?? {}
+
+        console.log(response.data)
+        const audio = Uint8Array.from(audioBuffer.data) ?? {}
+
+        psshKey = decodePSSHKey(pssh)
 
         sourceBuffer.appendBuffer(buffer.Buffer.from(audio))
     })
 }
 
 /** EME */
-let KEY = null
-export function initializeEME(video, mime, key) {
-	KEY = decodePSSHKey(key);
-
+export function initializeEME(video) {
 	var configMp4Mime = [{
         label: "audio-flac-sw-crypto",
 		initDataTypes: ["cenc"],
@@ -107,9 +109,9 @@ export function initializeEME(video, mime, key) {
         sessionTypes: ["temporary"]
 	}];
 
-	var WIDEVINE_KEY_SYSTEM = 'com.widevine.alpha';
+	var WIDEVINE_KEY_SYSTEM = 'com.widevine.alpha'
 
-	video.addEventListener('encrypted', handleEncrypted, false);
+    video.addEventListener('encrypted', (event) => handleEncrypted(event), false);
 
 	navigator.requestMediaKeySystemAccess(WIDEVINE_KEY_SYSTEM, configMp4Mime).then(
         (keySystemAccess) => {
@@ -127,11 +129,12 @@ export function initializeEME(video, mime, key) {
 }
 
 function handleEncrypted(event) {
-	video = event.target;
-	let session = video.mediaKeys.createSession();
+    console.log(event)
+	video = event.target
+	let session = video.mediaKeys.createSession()
     session.addEventListener("keystatuseschange", (msg) => console.log(msg));
 	session.addEventListener('message', handleMessage, false);
-	session.generateRequest(EmeConfig.initType, KEY.buffer).catch(
+	session.generateRequest(EmeConfig.initType, psshKey).catch(
 	  function(error) {
 	    console.error('Failed to generate a license request', error);
 	  }
@@ -143,22 +146,21 @@ async function handleMessage(event) {
 
   let session = event.target
   let message = event.message
-
   console.log(message)
 
   const license = await axios.request({
     method: "POST",
-    url: EmeConfig.license, //`http://localhost:3030/license`,
+    responseType: "arraybuffer",
+    maxBodyLength: Infinity,
+    url: "http://localhost:3030/license",
     headers: {
-        "content-type": "application/octet-stream",
-        "accept": "application/octet-stream",
-        "authorization": `Bearer ${userCred.accessToken}`,
-        "client-token": userCred.clientToken
+        "Content-Type": "application/octet-stream",
+        "Accept": "application/json, text/plain, */*"
     },
     data: message
   })
 
-  console.log(new buffer.Buffer.from(license.data))
+  console.log(license)
 
   session.update(new buffer.Buffer.from(license.data)).catch(
     function(error) {

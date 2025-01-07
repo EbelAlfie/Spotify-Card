@@ -84,7 +84,11 @@ export async function getAudioBuffer(request, response) {
 
         response.status(206)
         response.set(initBuffer.headers)
-        response.send(new Buffer.from(buffer.buffer))
+        response.contentType("application/json")
+        response.send({
+            audioBuffer: new Buffer.from(buffer.buffer),    
+            pssh: manifest.pssh        
+        })
     }
 
     socketService.onPlayerStateChanged = onPlayerStateChanged
