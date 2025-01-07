@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "deploy": "node --env-file=.env index.js",
-    "netlify": "netlify-lambda build express"
+    "netlify": "netlify-lambda build ./"
   },
   "type": "module",
   "author": "",
