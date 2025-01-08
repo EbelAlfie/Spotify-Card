@@ -1,4 +1,3 @@
 [build]
-    command = "npm install && npm run netlify"
-    pubish = "dist"
-    functions = "functions"
+    publish = "dist"
+    functions = "spot"
