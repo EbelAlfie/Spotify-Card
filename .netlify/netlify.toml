@@ -13,7 +13,7 @@ node_bundler = "esbuild"
 publish = "/home/gli/Documents/git-card/dist"
 publishOrigin = "config"
 commandOrigin = "config"
-command = "CI='' npm run netlify"
+command = "CI='' npm run deploy-global"
 functions = "/home/gli/Documents/git-card"
 
 [build.environment]

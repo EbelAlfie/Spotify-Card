@@ -1,10 +1,4 @@
-<<<<<<< HEAD:debugLayout/Player.js
-import { userCred } from "../config.js"
-import { apiConfig } from "./apiConfig.js"
-=======
-import { userCred } from "../config.js";
 import { apiConfig } from "../apiConfig.js";
->>>>>>> master:layout/Player.js
 import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../controller/utils/Utils.js";
 import { EmeConfig } from "../domain/model/EmeConfig.js";
 import { mimeCodec, path, songUrl, video } from "./global.js";
