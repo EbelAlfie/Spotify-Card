@@ -1,5 +1,5 @@
 [build]
-    command = "CI='' npm run deploy"
+    command = "CI='' npm run deploy-global"
     publish = "dist"
     functions = "."
 [functions]
