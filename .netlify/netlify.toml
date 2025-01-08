@@ -1,0 +1,31 @@
+plugins = []
+functionsDirectory = "/home/gli/Documents/git-card"
+functionsDirectoryOrigin = "config-v1"
+headers = []
+redirects = []
+
+[functions]
+
+[functions."*"]
+node_bundler = "esbuild"
+
+[build]
+publish = "/home/gli/Documents/git-card/dist"
+publishOrigin = "config"
+commandOrigin = "config"
+command = "CI='' npm run deploy"
+functions = "/home/gli/Documents/git-card"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]

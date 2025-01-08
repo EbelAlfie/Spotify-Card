@@ -1,3 +1,6 @@
 [build]
+    command = "CI='' npm run deploy"
     publish = "dist"
-    functions = "spot"
+    functions = "."
+[functions]
+    node_bundler = "esbuild"
