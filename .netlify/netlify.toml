@@ -1,5 +1,5 @@
 plugins = []
-functionsDirectory = "/home/gli/Documents/git-card"
+functionsDirectory = "/home/gli/Documents/git-card/.netlify/functions"
 functionsDirectoryOrigin = "config-v1"
 headers = []
 redirects = []
@@ -13,8 +13,8 @@ node_bundler = "esbuild"
 publish = "/home/gli/Documents/git-card/dist"
 publishOrigin = "config"
 commandOrigin = "config"
-command = "CI='' npm run deploy-global"
-functions = "/home/gli/Documents/git-card"
+command = "CI='' npm run netlify"
+functions = "/home/gli/Documents/git-card/.netlify/functions"
 
 [build.environment]
 
