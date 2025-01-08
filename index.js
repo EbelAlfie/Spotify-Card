@@ -19,8 +19,6 @@ app.post(License.Route, express.raw({ type: "application/octet-stream" }), Licen
 
 // app.use(AuthRoute.Route, AuthRoute.Controller())
 
-app.use("/.netlify/functions/api", app.routes)
-
 console.log("Starting server...")
 app.listen(apiConfig.port, () => {
     console.log(`Server started at ${apiConfig.port}`)
