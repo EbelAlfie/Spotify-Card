@@ -1,4 +1,8 @@
+<<<<<<< HEAD:debugLayout/global.js
 import { apiConfig } from "./apiConfig.js"
+=======
+import { apiConfig } from "../apiConfig.js";
+>>>>>>> master:layout/global.js
 
 export const path = {
     "track": "last-track",

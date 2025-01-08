@@ -37,8 +37,12 @@ export async function getSpotifyCard(request, response) {
     const trackRepository = new TrackRepository()
     const trackUseCase = new TrackUseCase(trackRepository)
 
+    let isResolved = false
     const onConnectionCreated = async (connectionId) => {
         httpHandler.setConnectionId(connectionId)
+
+        if (isResolved) return  
+        isResolved = true
         
         await deviceUseCase.registerDevice()
 
@@ -65,7 +69,9 @@ export async function getSpotifyCard(request, response) {
     
         response.status(200)
         response.header({
-            "Content-Type": "image/svg+xml"
+            "Content-Type": "image/svg+xml",
+            "Cache-Control": "no-cache",
+            "Expires": 0
         })
         response.send(debug ? responseResult : spotifyCard)
     }

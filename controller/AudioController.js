@@ -35,7 +35,11 @@ export async function getAudioBuffer(request, response) {
     const audioRepository = new AudioRepository()
     const audioUseCase = new AudioUseCase(audioRepository)
 
+    let isResolved = false
     const onPlayerStateChanged = async (command) => {
+        if (isResolved) return 
+        isResolved = true
+
         const stateMachine = command.state_machine
         const stateRef = command.state_ref
         

@@ -1,8 +1,14 @@
+<<<<<<< HEAD:debugLayout/Player.js
 import { userCred } from "../config.js"
 import { apiConfig } from "./apiConfig.js"
+=======
+import { userCred } from "../config.js";
+import { apiConfig } from "../apiConfig.js";
+>>>>>>> master:layout/Player.js
 import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../controller/utils/Utils.js";
 import { EmeConfig } from "../domain/model/EmeConfig.js";
 import { mimeCodec, path, songUrl, video } from "./global.js";
+import { reload } from "./Card.js";
 
 let mediaSource = null
 let sourceBuffer = null
@@ -39,6 +45,11 @@ async function onSourceOpen(_) {
     video.addEventListener('canplay', () => {
         console.log("Play")
         video.play();
+    })
+
+    video.addEventListener("ended", () => {
+        video.currentTime = 0
+        reload()
     })
 
     await updateV2()
