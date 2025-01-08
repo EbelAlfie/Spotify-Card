@@ -37,8 +37,12 @@ export async function getSpotifyCard(request, response) {
     const trackRepository = new TrackRepository()
     const trackUseCase = new TrackUseCase(trackRepository)
 
+    let isResolved = false
     const onConnectionCreated = async (connectionId) => {
         httpHandler.setConnectionId(connectionId)
+
+        if (isResolved) return  
+        isResolved = true
         
         await deviceUseCase.registerDevice()
 
