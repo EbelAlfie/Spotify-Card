@@ -1,6 +1,6 @@
 [build]
-    command = "CI='' npm run deploy-globalS"
+    command = "CI='' npm run deploy-global"
     publish = "dist"
-    functions = ".netlify/functions"
+    functions = "/"
 [functions]
     node_bundler = "esbuild"
