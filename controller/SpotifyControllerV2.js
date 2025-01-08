@@ -69,7 +69,8 @@ export async function getSpotifyCard(request, response) {
     
         response.status(200)
         response.header({
-            "Content-Type": "image/svg+xml"
+            "Content-Type": "image/svg+xml",
+            "Cache-Control": "no-cache"
         })
         response.send(debug ? responseResult : spotifyCard)
     }

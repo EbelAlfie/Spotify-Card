@@ -1,8 +1,14 @@
+import { apiConfig } from "../apiConfig.js"
+import { path } from "./global.js"
+import { setupAudioPlayer } from "./Player.js"
+
 const card = document.getElementById("card-container")
 const title = document.getElementById("song-title")
 const artist = document.getElementById("song-artist")  
 const cover = document.getElementById("album-image")  
 const track = document.getElementById("track-status")
+
+const img = document.getElementById("spotiCard")
 
 export async function getSpotiCardData() {
     try {
@@ -22,5 +28,12 @@ export async function getSpotiCardData() {
     } catch (error) {
         console.log(error)
         title.innerHTML = error
+    }
+}
+
+export function reload() {
+    img.src = `${apiConfig.baseUrl}${path.track}`
+    img.onload = () => {
+        setupAudioPlayer()
     }
 }

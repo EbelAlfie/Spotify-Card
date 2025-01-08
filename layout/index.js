@@ -1,14 +1,7 @@
-import { apiConfig } from "../apiConfig.js";
-import { path } from "./global.js";
-import { playAudio, setupAudioPlayer } from "./Player.js";
-
-const img = document.getElementById("spotiCard")
+import { reload } from "./Card.js";
 
 function main() {
-    img.src = `${apiConfig.baseUrl}${path.track}`
-    img.onload = () => {
-        setupAudioPlayer()
-    }
+    reload()
 }
 
 main()
