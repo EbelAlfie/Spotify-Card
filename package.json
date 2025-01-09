@@ -1,10 +1,10 @@
 {
   "name": "git-card",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "api/index.js",
   "scripts": {
-    "deploy": "node --env-file=.env index.js",
-    "vercel": "node index.js"
+    "deploy": "node --env-file=.env api/index.js",
+    "vercel": "node api/index.js"
   },
   "type": "module",
   "author": "",
