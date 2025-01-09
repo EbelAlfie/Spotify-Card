@@ -1,7 +1,7 @@
 {
   "name": "git-card",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "api/index.js",
   "scripts": {
     "deploy": "node --env-file=.env index.js",
     "netlify": "node index.js"

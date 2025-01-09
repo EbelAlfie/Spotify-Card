@@ -1,4 +1,4 @@
-import { authorizeUser } from "../controller/AuthController.js";
+import { authorizeUser } from "../controller/AuthController.js
 
 export const AuthRoute = {
     Route: "/",
