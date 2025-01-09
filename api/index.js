@@ -5,7 +5,7 @@ import { AuthRoute } from "./route/Auth.js"
 import { createProxyMiddleware } from "http-proxy-middleware"
 import { Audio } from "./route/Audio.js"
 import { License } from "./route/License.js"
-import { apiConfig } from "./apiConfig.js"
+import { apiConfig } from "../apiConfig.js"
 
 const app = express()
 
