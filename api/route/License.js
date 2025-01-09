@@ -1,4 +1,4 @@
-import { getLicense } from "../controller/LicenseController.js";
+import { getLicense } from "../api/controller/LicenseController.js";
 
 export const License = {
     Route: "/license",
