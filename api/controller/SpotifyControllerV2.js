@@ -71,7 +71,7 @@ export async function getSpotifyCard(request, response) {
         response.status(200)
         response.header({
             "Content-Type": "image/svg+xml",
-            "Cache-Control": "max-age=2592000 ,s-maxage=432000",
+            "Cache-Control": "max-age=1 ,s-maxage=1",
             "Expires": 0
         })
         response.send(debug ? responseResult : spotifyCard)
