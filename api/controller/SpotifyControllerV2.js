@@ -14,6 +14,7 @@ export async function getSpotifyCard(request, response) {
     const {
         debug = false
     } = request.query 
+    response.set("Content-Type", "image/svg+xml")
 
     const tokenRepository = new TokenRepository()
     const tokenUseCase = new TokenUseCase(tokenRepository)
@@ -70,7 +71,7 @@ export async function getSpotifyCard(request, response) {
         response.status(200)
         response.header({
             "Content-Type": "image/svg+xml",
-            "Cache-Control": "no-cache",
+            "Cache-Control": "max-age=2592000 ,s-maxage=432000",
             "Expires": 0
         })
         response.send(debug ? responseResult : spotifyCard)
