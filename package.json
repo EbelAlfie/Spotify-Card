@@ -14,9 +14,6 @@
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "http-proxy-middleware": "^3.0.3",
-    "mp4box": "^0.4.8",
-    "netlify-lambda": "^2.0.16",
-    "serverless-http": "^3.2.0"
+    "http-proxy-middleware": "^3.0.3"
   }
 }
