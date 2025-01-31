@@ -69,7 +69,7 @@ export async function getAudioBuffer(request, response) {
         let buffer = initBuffer
 
         console.log("Appending audio segments...")
-        for(let i = 0; i < 2; i++) {
+        for(let i = 0; i < contentSegments.length; i++) {
             const bufferPerSegment = 
                 await audioUseCase.loadAudioBuffer(cdnUrls.uri, contentSegments[i])
             if (isError(cdnUrls, response, debug)) return ;

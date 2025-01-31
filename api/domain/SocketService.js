@@ -1,5 +1,3 @@
-import { WebSocket } from "ws"
-
 export class SocketService {
     constructor(config) {
         const {
