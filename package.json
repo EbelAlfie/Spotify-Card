@@ -4,6 +4,7 @@
   "main": "api/index.js",
   "scripts": {
     "deploy": "node --env-file=.env api/index.js",
+    "build": "cd layout && npx webpack ./webpack.config.js",
     "netlify": "node api/index.js"
   },
   "type": "module",
@@ -15,10 +16,5 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "http-proxy-middleware": "^3.0.3"
-  },
-  "devDependencies": {
-    "html-webpack-plugin": "^5.6.3",
-    "webpack": "^5.97.1",
-    "webpack-cli": "^6.0.1"
   }
 }
