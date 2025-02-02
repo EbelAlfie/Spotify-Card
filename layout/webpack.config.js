@@ -2,14 +2,24 @@ const HtmlWebpackPlugin = require("html-webpack-plugin")
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 
 module.exports = {
-    target: "node",
+    target: "web",
     mode: 'development',
     entry : "./index.js",
     output: {
         filename: "index.js",
         path: __dirname + "/dist"
     },
-    watch: true,
+    module: {
+        rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    MiniCssExtractPlugin.loader,  // Extract CSS into separate file
+                    'css-loader'  // Resolve CSS imports
+                ]
+            }
+        ]
+    },
     plugins: [
         new HtmlWebpackPlugin({
             hash: true,
@@ -17,7 +27,7 @@ module.exports = {
             filename: 'index.html'
         }),
         new MiniCssExtractPlugin({
-            filename: "./layout/style.css"
+            filename: "./style.css"
         })
     ] 
 }
