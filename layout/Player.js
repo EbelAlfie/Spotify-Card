@@ -1,7 +1,8 @@
 import { apiConfig } from "../apiConfig.js";
 import { EmeConfig } from "../api/domain/model/EmeConfig.js";
-import { mimeCodec, path, video } from "./global.js";
+import { mimeCodec, path, songUrl, video } from "./global.js";
 import { reload } from "./Card.js";
+import { decodePSSHKey } from "../api/controller/utils/Utils.js";
 
 let mediaSource = null
 let sourceBuffer = null
@@ -45,6 +46,26 @@ async function onSourceOpen(_) {
     })
 
     await updateV2()
+}
+
+async function updateV2() {
+    axios.request({
+        method: "GET",
+        url: songUrl,
+        maxBodyLength: Infinity,
+    }).then(response => {
+        const {
+            audioBuffer = {},
+            pssh = ""
+        } = response.data ?? {}
+
+        console.log(response.data)
+        const audio = Uint8Array.from(audioBuffer.data) ?? {}
+
+        psshKey = decodePSSHKey(pssh)
+
+        sourceBuffer.appendBuffer(buffer.Buffer.from(audio))
+    })
 }
 
 /** EME */
