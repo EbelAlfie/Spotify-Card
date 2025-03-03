@@ -1,12 +1,11 @@
 import { apiConfig } from "../apiConfig.js";
-import { appendBuffer, decodePSSHKey, getSegmentForRange } from "../api/controller/utils/Utils.js";
 import { EmeConfig } from "../api/domain/model/EmeConfig.js";
 import { mimeCodec, path, songUrl, video } from "./global.js";
 import { reload } from "./Card.js";
+import { decodePSSHKey } from "../api/controller/utils/Utils.js";
 
 let mediaSource = null
 let sourceBuffer = null
-let initSegment = null
 
 let psshKey = ""
 
@@ -167,36 +166,4 @@ async function handleMessage(event) {
       console.error('Failed to update the session', error);
     }
   );
-}
-
-export function playAudio() {
-    fetchXhr({
-        url: songUrl,
-        callback: (result) =>{
-            const {
-                response = {},
-                contentLength = 0,
-                start = 0,
-                end = 0 
-            } = result ?? {}
-            
-            console.log(contentLength)
-            console.log((contentLength / 1024 / 1024).toFixed(2), 'MB');
-            console.log(`play ${response.byteLength}`)
-
-            let audio =  initSegment ? appendBuffer(initSegment, response).buffer :  response 
-            play(audio)
-        },
-        start: contentStart,
-        end: contentEnd
-    })
-}
-
-async function play(data) {
-    const context = new window.AudioContext;
-    const buffer = await context.decodeAudioData(data);
-    const source = context.createBufferSource();
-    source.buffer = buffer;
-    source.connect(context.destination);
-    source.start();
 }
