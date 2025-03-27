@@ -1,8 +1,6 @@
 import express from "express"
 import cors from "cors"
 import { SpotifyRoute } from "./route/Spotify.js"
-import { AuthRoute } from "./route/Auth.js"
-import { createProxyMiddleware } from "http-proxy-middleware"
 import { Audio } from "./route/Audio.js"
 import { License } from "./route/License.js"
 import { apiConfig } from "../apiConfig.js"
