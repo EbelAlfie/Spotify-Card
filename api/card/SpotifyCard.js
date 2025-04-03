@@ -4,7 +4,9 @@ export const getSpotifyPlayerCard = (config) => {
         songTitle = "", 
         artists = "", 
         audioUrl = "", 
-        isPlaying = false
+        isPlaying = false,
+        currentProgress = 0.1,
+        duration = 0.1
     } = config
     
     const cardScale = 2;
@@ -20,10 +22,6 @@ export const getSpotifyPlayerCard = (config) => {
         x: 10,
         y: 10,
         src: image
-    }
-
-    const audioModifier = {
-        url: audioUrl
     }
 
     const equalizerModifier = {
@@ -46,6 +44,14 @@ export const getSpotifyPlayerCard = (config) => {
         x: 30,
         y: equalizerModifier.y,//cardModifier.height - 10,
         text: isPlaying ? "Playing" : "Paused"
+    }
+
+    const timeModifier = {
+        width: "30%",
+        x: 30,
+        y: equalizerModifier.y + 10,
+        final: Math.floor(duration / 1e3),
+        initialPercent: (currentProgress / duration) * 100
     }
 
     const cardStyle = `
@@ -95,6 +101,19 @@ export const getSpotifyPlayerCard = (config) => {
                 animation-duration: 0.6s;
             }
 
+            .base-progress-bar {
+                width: ${timeModifier.width};
+                x: ${timeModifier.x};
+                y: ${timeModifier.y};
+            }
+
+            .progress-bar {
+                animation-iteration-count: 1;
+                animation-timing-function: linear;
+                animation-name: playback-anim ;
+                animation-duration: ${timeModifier.final}s ;
+            }
+
             @keyframes equalizer-anim {
                 0%, 100% {
                     height: 2px;
@@ -104,6 +123,15 @@ export const getSpotifyPlayerCard = (config) => {
                 }
                 60% {
                     height: 11px;
+                }
+            }
+
+            @keyframes playback-anim {
+                from {
+                    transform: scaleX(${timeModifier.initialPercent}%);
+                }
+                to {
+                    transform: scaleX(100%);
                 }
             }
         </style>
@@ -140,6 +168,24 @@ export const getSpotifyPlayerCard = (config) => {
         >
             ${caption.text}
         </text>
+
+        <rect  
+            class="base-progress-bar"
+            width="${cardModifier.width}" 
+            height="5%"
+            rx="5px"
+            fill="#e0e0e0"
+        >
+        </rect>
+
+        <rect 
+            class="base-progress-bar progress-bar"
+            width="${cardModifier.width}" 
+            height="5%" 
+            rx="5px" 
+            fill="#1DB954" 
+        />
+
         <image 
             class="album-image" 
             height="${imageModifier.height}" 

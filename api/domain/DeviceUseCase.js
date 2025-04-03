@@ -28,11 +28,15 @@ export class DeviceUseCase {
             const isPlaying = playerState.is_playing  ?? false
             const isPaused = playerState.is_paused  ?? false
             const track = playerState?.track
+            const currentProgress = playerState?.position_as_of_timestamp ?? '0'
+            const songDuration = playerState?.duration >> '0'
 
             const uri = track?.uri?.replace("spotify:track:", "")
             const mappedData = {
                 isPlaying: (isPlaying && !isPaused),
-                trackUri: uri ?? ""
+                trackUri: uri ?? "",
+                currentProgress: currentProgress,
+                songDuration: songDuration
             }
 
             return mappedData

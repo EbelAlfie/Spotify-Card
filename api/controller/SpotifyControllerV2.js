@@ -59,12 +59,16 @@ export async function getSpotifyCard(request, response) {
     
         const image = track.images?.length > 0 ? track?.images[0]?.url : ""
     
+        const currentProgress = parseInt(deviceState.currentProgress)
+        const songDuration = parseInt(deviceState.songDuration)
         const responseResult = {
                 image: await getImage(image), 
                 songTitle: track.name, 
                 artists: track.artists?.map(item => item.name).join(", "),
                 audioUrl: track.previewUrl,
-                isPlaying: deviceState.isPlaying
+                isPlaying: deviceState.isPlaying,
+                currentProgress: currentProgress,
+                duration: songDuration
             }
         const spotifyCard = getSpotifyPlayerCard(responseResult)
     
