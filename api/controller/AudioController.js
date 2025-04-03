@@ -6,7 +6,9 @@ import { httpHandler } from "../service/apiUtil/HttpHandler.js"
 import { AudioRepository } from "../service/AudioRepository.js"
 import { DeviceRepository } from "../service/DeviceRepository.js"
 import { TokenRepository } from "../service/TokenRepository.js"
+import { saveAudio } from "../service/Utils.js"
 import { appendBuffer, calculateSegment, isError, parseTrack } from "./utils/Utils.js"
+import * as fs from "node:fs"
 
 export async function getAudioBuffer(request, response) {
     const {
@@ -81,6 +83,8 @@ export async function getAudioBuffer(request, response) {
 
         console.log(cdnUrls.uri)
         console.log(buffer)
+
+        // saveAudio(buffer)
 
         response.status(206)
         response.set(initBuffer.headers)

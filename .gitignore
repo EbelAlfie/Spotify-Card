@@ -2,3 +2,5 @@
 .env
 config.js
 /layout/node_modules
+audio.mp3
+audio.mp4

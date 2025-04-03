@@ -1,3 +1,5 @@
+import { writeFileSync } from "node:fs";
+
 export const generateRandomDeviceId = (num = 40) => {
     const param = Math.ceil(num / 2);
     const rands = crypto.getRandomValues(new Uint8Array(param))
@@ -13,4 +15,8 @@ export const generateRandomDeviceId = (num = 40) => {
 export const generateDeviceIdObserver = (deviceId) => {
     const pattern = new RegExp("^([a-zA-Z0-9_%:-]{1,40}).*$")
     return `hobs_${deviceId}`.replace(pattern, "$1")
+}
+
+export const saveAudio = (audioBuffer) =>  {
+    writeFileSync("audio.mp4", audioBuffer)
 }
