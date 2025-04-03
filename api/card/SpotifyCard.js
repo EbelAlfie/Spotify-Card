@@ -47,12 +47,17 @@ export const getSpotifyPlayerCard = (config) => {
     }
 
     const timeModifier = {
-        width: "30%",
+        width: 30,
         x: 30,
         y: equalizerModifier.y + 10,
         final: Math.floor(duration / 1e3),
         initialPercent: (currentProgress / duration) * 100
     }
+
+    console.log("VIS LOG")
+    console.log(duration)
+    console.log(currentProgress)
+    console.log(timeModifier.width * timeModifier.initialPercent)
 
     const cardStyle = `
         <style>
@@ -102,12 +107,14 @@ export const getSpotifyPlayerCard = (config) => {
             }
 
             .base-progress-bar {
-                width: ${timeModifier.width};
+                width: ${timeModifier.width}%;
                 x: ${timeModifier.x};
                 y: ${timeModifier.y};
             }
 
             .progress-bar {
+                transform-box:fill-box; 
+                transform-origin: left;
                 animation-iteration-count: 1;
                 animation-timing-function: linear;
                 animation-name: playback-anim ;
@@ -129,9 +136,11 @@ export const getSpotifyPlayerCard = (config) => {
             @keyframes playback-anim {
                 from {
                     transform: scaleX(${timeModifier.initialPercent}%);
+                    // width: ${timeModifier.initialPercent}%;
                 }
                 to {
                     transform: scaleX(100%);
+                    // width: calc(${timeModifier.width}%);
                 }
             }
         </style>
@@ -173,16 +182,15 @@ export const getSpotifyPlayerCard = (config) => {
             class="base-progress-bar"
             width="${cardModifier.width}" 
             height="5%"
-            rx="5px"
+            rx="5"
             fill="#e0e0e0"
-        >
-        </rect>
+        />
 
         <rect 
             class="base-progress-bar progress-bar"
             width="${cardModifier.width}" 
             height="5%" 
-            rx="5px" 
+            rx="5" 
             fill="#1DB954" 
         />
 
