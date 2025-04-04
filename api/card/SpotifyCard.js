@@ -1,3 +1,5 @@
+import { timeText } from "./Utils.js";
+
 export const getSpotifyPlayerCard = (config) => {
     const {
         image = "", 
@@ -51,11 +53,16 @@ export const getSpotifyPlayerCard = (config) => {
         x: 30,
         y: equalizerModifier.y + 10,
         final: Math.floor(duration / 1e3),
-        initialPercent: (currentProgress / duration) * 100
+        initialPercent: (currentProgress / duration) * 100,
     }
 
     const progress = {
         css: `
+        .timestamp {
+            fill: #ffffff;
+            font-size: 0.5em;
+        }
+
         .base-progress-bar {
             width: ${timeModifier.width}%;
             x: ${timeModifier.x};
@@ -73,11 +80,9 @@ export const getSpotifyPlayerCard = (config) => {
 
         @keyframes playback-anim {
             from {
-                // transform: scaleX(${timeModifier.initialPercent}%);
-                width: calc((${timeModifier.initialPercent}/ ${timeModifier.width})%);
+                width: ${(timeModifier.initialPercent * timeModifier.width)/100}%;
             }
             to {
-                // transform: scaleX(100%);
                 width: ${timeModifier.width}%;
             }
         }
@@ -85,27 +90,34 @@ export const getSpotifyPlayerCard = (config) => {
         layout: `
         <rect  
             class="base-progress-bar"
-            width="${cardModifier.width}" 
-            height="5%"
-            rx="5"
+            height="2%"
+            rx="2"
             fill="#e0e0e0"
         />
 
         <rect 
             class="base-progress-bar progress-bar"
-            width="${cardModifier.width}" 
-            height="5%" 
-            rx="5" 
+            height="2%" 
+            rx="2" 
             fill="#1DB954" 
         />
+
+        <text 
+            class="timestamp" 
+            x="${timeModifier.x}" y="${timeModifier.y + 10}"
+        >
+            000
+        </text>
+
+        <text 
+            class="timestamp" 
+            x= "${timeModifier.width}%"
+            y="${timeModifier.y + 10}"
+        >
+            ${timeText(duration)}
+        </text>
         `
     }
-
-    console.log("VIS LOG")
-    console.log(duration)
-    console.log(currentProgress)
-    console.log(timeModifier.initialPercent)
-    console.log((timeModifier.initialPercent/timeModifier.width))
 
     const cardStyle = `
         <style>
