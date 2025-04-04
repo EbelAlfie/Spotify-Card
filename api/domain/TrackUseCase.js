@@ -11,9 +11,7 @@ export class TrackUseCase {
         } = params
 
         return this.repository.getTrackById(trackId)
-        .then(response => {
-            console.log(JSON.stringify(response.data));
-            
+        .then(response => {            
             const tracks = response.data.tracks
             const firstTrack = tracks[0] 
             const album = firstTrack.album

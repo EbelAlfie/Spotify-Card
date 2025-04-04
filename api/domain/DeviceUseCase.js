@@ -11,7 +11,6 @@ export class DeviceUseCase {
         return this.repository.registerDevice()
             .then(response => {
                 const data = response.data
-                console.log(data)
                 return response
             })
             .catch(error => {
@@ -24,6 +23,7 @@ export class DeviceUseCase {
         return this.repository.connectDevice()
         .then(response => {            
             const playerState = response.data.player_state
+            console.log(playerState)
 
             const isPlaying = playerState.is_playing  ?? false
             const isPaused = playerState.is_paused  ?? false
@@ -51,7 +51,6 @@ export class DeviceUseCase {
         return this.repository.activateDevice()
             .then(response => {
                 const data = response.data
-                console.log(data)
                 return response
             })
             .catch(error => {

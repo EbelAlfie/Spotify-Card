@@ -54,10 +54,58 @@ export const getSpotifyPlayerCard = (config) => {
         initialPercent: (currentProgress / duration) * 100
     }
 
+    const progress = {
+        css: `
+        .base-progress-bar {
+            width: ${timeModifier.width}%;
+            x: ${timeModifier.x};
+            y: ${timeModifier.y};
+        }
+
+        .progress-bar {
+            transform-box:fill-box; 
+            transform-origin: left;
+            animation-iteration-count: 1;
+            animation-timing-function: linear;
+            animation-name: playback-anim ;
+            animation-duration: ${timeModifier.final}s ;
+        }
+
+        @keyframes playback-anim {
+            from {
+                // transform: scaleX(${timeModifier.initialPercent}%);
+                width: calc((${timeModifier.initialPercent}/ ${timeModifier.width})%);
+            }
+            to {
+                // transform: scaleX(100%);
+                width: ${timeModifier.width}%;
+            }
+        }
+        `,
+        layout: `
+        <rect  
+            class="base-progress-bar"
+            width="${cardModifier.width}" 
+            height="5%"
+            rx="5"
+            fill="#e0e0e0"
+        />
+
+        <rect 
+            class="base-progress-bar progress-bar"
+            width="${cardModifier.width}" 
+            height="5%" 
+            rx="5" 
+            fill="#1DB954" 
+        />
+        `
+    }
+
     console.log("VIS LOG")
     console.log(duration)
     console.log(currentProgress)
-    console.log(timeModifier.width * timeModifier.initialPercent)
+    console.log(timeModifier.initialPercent)
+    console.log((timeModifier.initialPercent/timeModifier.width))
 
     const cardStyle = `
         <style>
@@ -106,21 +154,6 @@ export const getSpotifyPlayerCard = (config) => {
                 animation-duration: 0.6s;
             }
 
-            .base-progress-bar {
-                width: ${timeModifier.width}%;
-                x: ${timeModifier.x};
-                y: ${timeModifier.y};
-            }
-
-            .progress-bar {
-                transform-box:fill-box; 
-                transform-origin: left;
-                animation-iteration-count: 1;
-                animation-timing-function: linear;
-                animation-name: playback-anim ;
-                animation-duration: ${timeModifier.final}s ;
-            }
-
             @keyframes equalizer-anim {
                 0%, 100% {
                     height: 2px;
@@ -132,17 +165,7 @@ export const getSpotifyPlayerCard = (config) => {
                     height: 11px;
                 }
             }
-
-            @keyframes playback-anim {
-                from {
-                    transform: scaleX(${timeModifier.initialPercent}%);
-                    // width: ${timeModifier.initialPercent}%;
-                }
-                to {
-                    transform: scaleX(100%);
-                    // width: calc(${timeModifier.width}%);
-                }
-            }
+            ${progress.css}
         </style>
     `
 
@@ -178,21 +201,7 @@ export const getSpotifyPlayerCard = (config) => {
             ${caption.text}
         </text>
 
-        <rect  
-            class="base-progress-bar"
-            width="${cardModifier.width}" 
-            height="5%"
-            rx="5"
-            fill="#e0e0e0"
-        />
-
-        <rect 
-            class="base-progress-bar progress-bar"
-            width="${cardModifier.width}" 
-            height="5%" 
-            rx="5" 
-            fill="#1DB954" 
-        />
+        ${progress.layout}
 
         <image 
             class="album-image" 
