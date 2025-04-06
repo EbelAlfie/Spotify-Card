@@ -18,5 +18,5 @@ export const generateDeviceIdObserver = (deviceId) => {
 }
 
 export const saveAudio = (audioBuffer) =>  {
-    writeFileSync("audio.mp4", audioBuffer)
+    writeFileSync("/home/gli/Downloads/audio.mp4", audioBuffer)
 }

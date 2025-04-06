@@ -63,6 +63,7 @@ async function updateV2() {
         const audio = Uint8Array.from(audioBuffer.data) ?? {}
 
         psshKey = decodePSSHKey(pssh)
+        console.log("PSSH key: " + pssh)
 
         sourceBuffer.appendBuffer(buffer.Buffer.from(audio))
     })
@@ -159,9 +160,10 @@ async function handleMessage(event) {
     data: message
   })
 
-  console.log(license)
+  const licenseBuffer = new buffer.Buffer.from(license.data)
+  console.log("License " + licenseBuffer.toString("base64"))
 
-  session.update(new buffer.Buffer.from(license.data)).catch(
+  session.update(licenseBuffer).catch(
     function(error) {
       console.error('Failed to update the session', error);
     }

@@ -84,7 +84,7 @@ export async function getAudioBuffer(request, response) {
         console.log(cdnUrls.uri)
         console.log(buffer)
 
-        // saveAudio(buffer)
+        saveAudio(buffer)
 
         response.status(206)
         response.set(initBuffer.headers)
