@@ -116,9 +116,7 @@ export function initializeEME(video) {
     video.addEventListener('encrypted', (event) => handleEncrypted(event), false);
 
 	navigator.requestMediaKeySystemAccess(WIDEVINE_KEY_SYSTEM, configMp4Mime).then(
-        (keySystemAccess) => {
-            return keySystemAccess.createMediaKeys()
-        }
+        (keySystemAccess) => keySystemAccess.createMediaKeys()
 	).then(
 	  (createdMediaKeys) => {
 	    return video.setMediaKeys(createdMediaKeys);
@@ -143,7 +141,7 @@ function handleEncrypted(event) {
 }
 
 async function handleMessage(event) {
-  console.log(event.message)
+  console.log("Media keys license request: " + new buffer.Buffer.from(event.message).toString("base64"))
 
   let session = event.target
   let message = event.message

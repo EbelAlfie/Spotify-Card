@@ -64,32 +64,3 @@ function configureScale(props) {
 export function logEvent(tag, event) {
     console.log(tag + " " + JSON.stringify(event))
 }
-
-export async function fetchXhr(param) {
-    const {
-        url, 
-        start = 0, 
-        end = 1807, 
-        callback
-    } = param
-    
-    console.log(url);
-    var xhr = new XMLHttpRequest;
-
-    xhr.open('GET', url);
-    xhr.setRequestHeader("Accept", "*/*");
-    xhr.setRequestHeader("Accept-Language", "en-US,en;q=0.9,id;q=0.8");
-    xhr.setRequestHeader("Range", `bytes=${start}-${end}`);
-
-    xhr.responseType = 'arraybuffer';
-    xhr.onload = () => {
-        console.log(`res headers ${xhr.getAllResponseHeaders()}`)
-        callback({
-            response: xhr.response,
-            contentLength: xhr.getResponseHeader("content-length"),
-            start: start,
-            end: end
-        });
-    };
-    xhr.send();
-}
