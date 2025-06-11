@@ -47,7 +47,7 @@ export class TokenRepository {
             headers: {
                 "cookie": `sp_dc=${this.me};`
             },
-            url: `https://open.spotify.com/get_access_token?reason=init&productType=web-player&totp=${totp}&totpServer=${totpServer}&totpVer=5&sTime=1743063046&cTime=1743063047192&buildVer=web-player_2025-03-27_1743057394716_7cfd796&buildDate=2025-03-27`
+            url: `https://open.spotify.com/api/token?reason=init&productType=web-player&totp=${totp}&totpServer=${totpServer}&totpVer=5&sTime=1743063046&cTime=1743063047192&buildVer=web-player_2025-03-27_1743057394716_7cfd796&buildDate=2025-03-27`
         }
 
         return httpHandler
