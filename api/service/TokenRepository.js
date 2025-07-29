@@ -1,5 +1,5 @@
 import { httpHandler } from "./apiUtil/HttpHandler.js";
-import { generateSecret, getVersion } from "./TokenUtils.js";
+import { generateSecret } from "./TokenUtils.js";
 
 export class TokenRepository {
     constructor() {
