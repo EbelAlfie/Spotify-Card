@@ -4,7 +4,8 @@
   "main": "api/index.js",
   "scripts": {
     "deploy": "node --env-file=.env api/index.js",
-    "build": "cd layout && npx webpack serve",
+    "serve": "cd layout && npx webpack serve --config webpack.config.js",
+    "build": "cd layout && npx webpack --config webpack.config.js",
     "netlify": "node api/index.js"
   },
   "type": "module",
