@@ -1,4 +1,4 @@
-import { apiConfig } from "../apiConfig.js";
+import { apiConfig } from "../common/apiConfig.js";
 
 export const path = {
     "track": "last-track",

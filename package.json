@@ -4,7 +4,7 @@
   "main": "api/index.js",
   "scripts": {
     "deploy": "node --env-file=.env api/index.js",
-    "build": "cd layout && npx webpack ./webpack.config.js",
+    "build": "cd layout && npx webpack serve",
     "netlify": "node api/index.js"
   },
   "type": "module",
@@ -17,5 +17,10 @@
     "express": "^4.21.1",
     "http-proxy-middleware": "^3.0.3",
     "otpauth": "^9.4.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.101.0",
+    "webpack-cli": "^6.0.1",
+    "webpack-dev-server": "^5.2.2"
   }
 }

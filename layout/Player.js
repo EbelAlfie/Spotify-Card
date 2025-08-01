@@ -1,8 +1,8 @@
-import { apiConfig } from "../apiConfig.js";
-import { EmeConfig } from "../api/domain/model/EmeConfig.js";
+import { apiConfig } from "../common/apiConfig.js";
+import { EmeConfig } from "../common/EmeConfig.js";
 import { mimeCodec, path, songUrl, video } from "./global.js";
 import { reload } from "./Card.js";
-import { decodePSSHKey } from "../api/controller/utils/Utils.js";
+import { decodePSSHKey } from "../common/Utils.js";
 
 let mediaSource = null
 let sourceBuffer = null

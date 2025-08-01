@@ -3,7 +3,7 @@ import cors from "cors"
 import { SpotifyRoute } from "./route/Spotify.js"
 import { Audio } from "./route/Audio.js"
 import { License } from "./route/License.js"
-import { apiConfig } from "../apiConfig.js"
+import { apiConfig } from "../common/apiConfig.js"
 
 const app = express()
 

@@ -1,4 +1,3 @@
-import { EmeConfig } from "../domain/model/EmeConfig.js";
 import { httpHandler } from "./apiUtil/HttpHandler.js";
 
 export class AudioRepository {

@@ -1,42 +1,26 @@
-const HtmlWebpackPlugin = require("html-webpack-plugin")
-const MiniCssExtractPlugin = require("mini-css-extract-plugin")
+const path = require('path');
 
 module.exports = {
-    target: "web",
-    mode: 'development',
-    entry: './index.js',
-    output: {
-        filename: "index.js",
-        path: __dirname + "/dist"
-    },
-    resolve: {
-        fallback: {
-            "path": false,
-            "os": false,
-            "tty": false,
-            "fs": false,
-            "module": false,
-            "vm": false,
-            "https": false,
-            "http": false
-        }
-    },
-    module: {
-        rules: [
-            {
-                test: /\.css$/i,
-                use: [MiniCssExtractPlugin.loader, "css-loader", "style-loader"],
-            },
-        ]
-    },
-    plugins: [
-        new HtmlWebpackPlugin({
-            hash: true,
-            template: './index.html',
-            filename: 'index.html'
-        }),
-        new MiniCssExtractPlugin({
-            filename: "style.css"
-        })
-    ] 
-}
+  entry: './index.js',
+  output: {
+    filename: 'bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    clean: true,
+  },
+  devServer: {
+    static: [
+      {
+        directory: path.join(__dirname),
+        publicPath: '/',
+      },
+      {
+        directory: path.join(__dirname, '../common'), // atau folder luar kamu
+        publicPath: '/common',
+      }
+    ],
+    // static: '.',
+    open: true,
+    port: 3000,
+  },
+  mode: 'development',
+};
