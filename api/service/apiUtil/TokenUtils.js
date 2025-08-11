@@ -1,9 +1,9 @@
 import * as otp from "otpauth"
 
-export const generateSecret = () => {
+export const generateSecret = (secret) => {
     const now = Date.now()
     return otp.TOTP.generate({
-        secret: getSecret(),
+        secret: secret,
         algorithm: "SHA1",
         digits: 6,
         period: 30,
@@ -11,8 +11,9 @@ export const generateSecret = () => {
     })
 }
 
-const getSecret = () => {
-    const secret = '($r=Ho^/4LY|j>`#5';
+export const getSecret = () => {
+    const secret = 'qR@.~y>1Wl$GEVP7^UmG )-';
+    const version = 25
     const encodedSec = secret.split("").map((ch, idx) => {
         const n = ch.charCodeAt(0)
         return n ^ ((idx % 33) + 9)
@@ -26,5 +27,8 @@ const getSecret = () => {
         .join('')
 
     const otpSec = otp.Secret.fromHex(hexSecret)
-    return otpSec
+    return {
+        secret: otpSec,
+        version: version
+    }
 }

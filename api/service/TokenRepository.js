@@ -1,5 +1,5 @@
 import { httpHandler } from "./apiUtil/HttpHandler.js";
-import { generateSecret } from "./apiUtil/TokenUtils.js";
+import { generateSecret, getSecret } from "./apiUtil/TokenUtils.js";
 
 export class TokenRepository {
     constructor() {
@@ -40,15 +40,14 @@ export class TokenRepository {
     }
 
     async fetchAccessToken() {
-        const totp = generateSecret() //"036953"
-        const totpServer = generateSecret() 
-        const version = 27
+        const { secret, version } = getSecret()
+        const totp = generateSecret(secret) 
         const config = {
             method: "get",
             headers: {
                 "cookie": `sp_dc=${this.me};`
             },
-            url: `https://open.spotify.com/api/token?reason=init&productType=web-player&totp=${totp}&totpServer=${totpServer}&totpVer=${version}`
+            url: `https://open.spotify.com/api/token?reason=init&productType=web-player&totp=${totp}&totpServer=${totp}&totpVer=${version}`
         }
 
         return httpHandler
