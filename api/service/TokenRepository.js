@@ -1,5 +1,5 @@
 import { httpHandler } from "./apiUtil/HttpHandler.js";
-import { generateSecret } from "./TokenUtils.js";
+import { generateSecret } from "./apiUtil/TokenUtils.js";
 
 export class TokenRepository {
     constructor() {
@@ -42,7 +42,7 @@ export class TokenRepository {
     async fetchAccessToken() {
         const totp = generateSecret() //"036953"
         const totpServer = generateSecret() 
-        const version = 21
+        const version = 27
         const config = {
             method: "get",
             headers: {
