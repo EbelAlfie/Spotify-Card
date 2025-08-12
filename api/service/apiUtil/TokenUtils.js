@@ -12,8 +12,8 @@ export const generateSecret = (secret) => {
 }
 
 export const getSecret = () => {
-    const secret = 'qR@.~y>1Wl$GEVP7^UmG )-';
-    const version = 25
+    const secret = 'X:<1zK2J|Oq2WLE3JNG`.},sdQ.%.';
+    const version = 28
     const encodedSec = secret.split("").map((ch, idx) => {
         const n = ch.charCodeAt(0)
         return n ^ ((idx % 33) + 9)

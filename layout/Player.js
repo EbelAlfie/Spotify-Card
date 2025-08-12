@@ -37,7 +37,6 @@ async function onSourceOpen(_) {
 
     video.addEventListener('canplay', () => {
         console.log("Play")
-        video.play();
     })
 
     video.addEventListener("ended", () => {
